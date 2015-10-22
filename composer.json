@@ -24,8 +24,8 @@
     "reliv/zf-config-factories": ">=2.0.0",
     "rwoverdijk/assetmanager": "1.*",
     "rcm/core": ">=0.3.2",
-    "rcm/api-lib": ">=0.*",
-    "rcm/user": ">=0.*"
+    "rcm/api-lib": ">=0.3.0",
+    "rcm/user": ">=0.3.0"
   },
   "autoload": {
     "psr-4": {
