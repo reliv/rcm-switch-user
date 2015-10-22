@@ -5,6 +5,8 @@ return [
         'invokables' => [
             'Rcm\SwitchUser\ApiController\RpcSuController'
             => 'Rcm\SwitchUser\ApiController\RpcSuController',
+            'Rcm\SwitchUser\ApiController\RpcSwitchBackController'
+            => 'Rcm\SwitchUser\ApiController\RpcSwitchBackController',
         ],
     ],
     /* Configuration */
@@ -27,6 +29,15 @@ return [
                     'route' => '/api/rpc/switch-user[/:id]',
                     'defaults' => [
                         'controller' => 'Rcm\SwitchUser\ApiController\RpcSuController',
+                    ]
+                ]
+            ],
+            'Rcm\SwitchUser\ApiController\RpcSwitchBack' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => [
+                    'route' => '/api/rpc/switch-user-back[/:id]',
+                    'defaults' => [
+                        'controller' => 'Rcm\SwitchUser\ApiController\RpcSwitchBackController',
                     ]
                 ]
             ],

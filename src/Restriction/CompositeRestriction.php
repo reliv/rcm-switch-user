@@ -72,7 +72,7 @@ class CompositeRestriction implements Restriction
      * allowed
      *
      * @param User $adminUser
-     * @param User $switchToUser
+     * @param User $targetUser
      *
      * @return bool
      */

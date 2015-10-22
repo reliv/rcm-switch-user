@@ -251,7 +251,7 @@ class SwitchUserService
     }
 
     /**
-     * getSuUserFromCurrent
+     * getSuUserFromCurrent Get the admin user from the current user if SUed
      *
      * @return null|User
      */
@@ -269,7 +269,7 @@ class SwitchUserService
     }
 
     /**
-     * getSuUserFromCurrent
+     * getSuUser Get the admin user from the user if SUed
      *
      * @return null|User
      */
