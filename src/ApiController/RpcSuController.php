@@ -19,73 +19,48 @@ use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
  * @version   Release: <package_version>
  * @link      https://github.com/reliv
  */
-class RpcSuController extends AbstractRestfulJsonController
+class RpcSuController extends BaseApiController
 {
     /**
-     * getRcmUserService
-     *
-     * @return \RcmUser\Service\RcmUserService
-     */
-    protected function getRcmUserService()
-    {
-        return $this->getServiceLocator()->get(
-            'RcmUser\Service\RcmUserService'
-        );
-    }
-
-    /**
-     * getSwitchUserService
-     *
-     * @return \Rcm\SwitchUser\Service\SwitchUserService
-     */
-    protected function getSwitchUserService()
-    {
-        return $this->getServiceLocator()->get(
-            'Rcm\SwitchUser\Service\SwitchUserService'
-        );
-    }
-
-    /**
-     * getAclConfig
-     *
-     * @return array
-     */
-    protected function getAclConfig()
-    {
-        $config = $this->getServiceLocator()->get(
-            'config'
-        );
-
-        return $config['Rcm\\SwitchUser']['acl'];
-    }
-
-    /**
-     * isAllowed
-     *
-     * @return bool
-     */
-    protected function isAllowed()
-    {
-        $aclConfig = $this->getAclConfig();
-
-        return $this->getRcmUserService()->isAllowed(
-            $aclConfig['resourceId'],
-            $aclConfig['admin'],
-            $aclConfig['providerId']
-        );
-    }
-
-    /**
-     * update
+     * create
      *
      * @param array $data ['switchToUserId' => '{MY_ID}']
      *
      * @return \Reliv\RcmApiLib\Http\ApiResponse
      */
-    public function update($data)
+    public function getList()
     {
+        $service = $this->getSwitchUserService();
 
-        if (!$this->isAllowed()) {
+        $suUser = $service->getCurrentSuUser();
+
+        $data = [
+            'isSu' => false,
+            'user' => null,
+        ];
+
+        if (empty($suUser)) {
+            return $this->getApiResponse($data, 401);
+        }
+        // only expose some info
+        $data['isSu'] = true;
+        $data['user'] = $this->getRcmUserService()->getCurrentUser();
+
+        return $this->getApiResponse($data);
+    }
+
+    /**
+     * create
+     *
+     * @param array $data ['switchToUserId' => '{MY_ID}']
+     *
+     * @return \Reliv\RcmApiLib\Http\ApiResponse
+     */
+    public function create($data)
+    {
+        $currentUser = $this->getRcmUserService()->getCurrentUser();
+
+        if (!$this->isAllowed($currentUser)) {
             return $this->getApiResponse(null, 401);
         }
 
@@ -119,6 +94,6 @@ class RpcSuController extends AbstractRestfulJsonController
             );
         }
 
-        return $this->getApiResponse($result);
+        return $this->getApiResponse($user);
     }
 }

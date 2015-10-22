@@ -6,7 +6,7 @@ use RcmUser\Service\RcmUserService;
 use RcmUser\User\Entity\User;
 
 /**
- * class AclRestriction
+ * class SuUserRestriction
  *
  * PHP version 5
  *
@@ -18,7 +18,7 @@ use RcmUser\User\Entity\User;
  * @version   Release: <package_version>
  * @link      https://github.com/reliv
  */
-class AclRestriction implements Restriction
+class SuUserRestriction implements Restriction
 {
     /**
      * @var array
@@ -31,7 +31,7 @@ class AclRestriction implements Restriction
     protected $rcmUserService;
 
     /**
-     * @param array $config
+     * @param array          $config
      * @param RcmUserService $rcmUserService
      */
     public function __construct($config, RcmUserService $rcmUserService)
@@ -54,14 +54,11 @@ class AclRestriction implements Restriction
             $this->aclConfig['resourceId'],
             $this->aclConfig['privilege'],
             $this->aclConfig['providerId'],
-            $adminUser
+            $targetUser
         );
 
-        if (!$isAllowed) {
-            return new RestrictionResult(
-                false,
-                'Current user does not have access to SU'
-            );
+        if ($isAllowed) {
+            return new RestrictionResult(false, 'Cannot SU as user with SU access');
         }
 
         return new RestrictionResult(true);

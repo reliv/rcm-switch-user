@@ -7,18 +7,43 @@ return [
             => 'Rcm\SwitchUser\ApiController\RpcSuController',
             'Rcm\SwitchUser\ApiController\RpcSwitchBackController'
             => 'Rcm\SwitchUser\ApiController\RpcSwitchBackController',
+            'Rcm\SwitchUser\Controller\AdminController'
+            => 'Rcm\SwitchUser\Controller\AdminController',
         ],
+    ],
+    /* DOCTRINE */
+    'doctrine' => [
+        'driver' => [
+            'Rcm\SwitchUser' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => [
+                    __DIR__ . '/../src/Entity'
+                ]
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'Rcm\SwitchUser' => 'Rcm\SwitchUser'
+                ]
+            ]
+        ]
     ],
     /* Configuration */
     'Rcm\\SwitchUser' => [
         'restrictions' => [
-            'Rcm\SwitchUser\Restriction\AclRestriction'
+            'Rcm\SwitchUser\Restriction\AclRestriction',
+            'Rcm\SwitchUser\Restriction\SuUserRestriction',
         ],
         'acl' => [
             'resourceId' => 'sites',
             'privilege' => 'admin',
             'providerId' => 'Rcm\Acl\ResourceProvider'
         ],
+        /*
+         * 'basic' = no auth required
+         * 'auth'  = password auth required to switch back to admin
+         */
+        'switchBackMethod' => 'auth',
     ],
     /* ROUTES */
     'router' => [
@@ -41,6 +66,17 @@ return [
                     ]
                 ]
             ],
+
+            'Rcm\SwitchUser\Controller\Admin' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => [
+                    'route' => '/switch-user',
+                    'defaults' => [
+                        'controller' => 'Rcm\SwitchUser\Controller\AdminController',
+                        'action' => 'index',
+                    ]
+                ]
+            ],
         ],
     ],
     /* SERVICE MANAGER */
@@ -52,15 +88,28 @@ return [
                     'RcmUser\Service\RcmUserService',
                 ]
             ],
+            'Rcm\SwitchUser\Restriction\SuUserRestriction' => [
+                'arguments' => [
+                    'config',
+                    'RcmUser\Service\RcmUserService',
+                ]
+            ],
             'Rcm\SwitchUser\Service\SwitchUserService' => [
                 'arguments' => [
+                    'config',
                     'RcmUser\Service\RcmUserService',
-                    'RcmUser\Service\RcmUserService',
+                    'Rcm\SwitchUser\Restriction',
+                    'Doctrine\ORM\EntityManager',
                 ]
             ],
         ],
         'factories' => [
             'Rcm\SwitchUser\Restriction' => 'Rcm\SwitchUser\Factory\CompositeRestrictionFactory'
+        ],
+    ],
+    'view_manager' => [
+        'template_path_stack' => [
+            __DIR__ . '/../view',
         ],
     ],
 ];

@@ -2,6 +2,7 @@
 
 namespace Rcm\SwitchUser\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Reliv\RcmApiLib\Model\AbstractApiModel;
 
 /**

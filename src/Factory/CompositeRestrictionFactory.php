@@ -1,6 +1,6 @@
 <?php
 
-namespace Reliv\Conference\Factory;
+namespace Rcm\SwitchUser\Factory;
 
 use Rcm\SwitchUser\Restriction\CompositeRestriction;
 use Zend\ServiceManager\FactoryInterface;

@@ -2,7 +2,6 @@
 
 namespace Rcm\SwitchUser\ApiController;
 
-use Reliv\RcmApiLib\Controller\AbstractRestfulJsonController;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
 use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
 
@@ -19,74 +18,16 @@ use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
  * @version   Release: <package_version>
  * @link      https://github.com/reliv
  */
-class RpcSwitchBackController extends AbstractRestfulJsonController
+class RpcSwitchBackController extends BaseApiController
 {
     /**
-     * getRcmUserService
+     * create
      *
-     * @return \RcmUser\Service\RcmUserService
-     */
-    protected function getRcmUserService()
-    {
-        return $this->getServiceLocator()->get(
-            'RcmUser\Service\RcmUserService'
-        );
-    }
-
-    /**
-     * getSwitchUserService
-     *
-     * @return \Rcm\SwitchUser\Service\SwitchUserService
-     */
-    protected function getSwitchUserService()
-    {
-        return $this->getServiceLocator()->get(
-            'Rcm\SwitchUser\Service\SwitchUserService'
-        );
-    }
-
-    /**
-     * getAclConfig
-     *
-     * @return array
-     */
-    protected function getAclConfig()
-    {
-        $config = $this->getServiceLocator()->get(
-            'config'
-        );
-
-        return $config['Rcm\\SwitchUser']['acl'];
-    }
-
-    /**
-     * isAllowed
-     *
-     * @return bool
-     */
-    protected function isAllowed($suUser)
-    {
-        if (empty($suUser)) {
-            return false;
-        }
-        $aclConfig = $this->getAclConfig();
-
-        return $this->getRcmUserService()->isUserAllowed(
-            $aclConfig['resourceId'],
-            $aclConfig['admin'],
-            $aclConfig['providerId'],
-            $suUser
-        );
-    }
-
-    /**
-     * update
-     *
-     * @param array $data ['switchToUserId' => '{MY_ID}']
+     * @param array $data ['suUserPassword' => '{validPassword}']
      *
      * @return \Reliv\RcmApiLib\Http\ApiResponse
      */
-    public function update($data)
+    public function create($data)
     {
         $service = $this->getSwitchUserService();
 
@@ -96,8 +37,14 @@ class RpcSwitchBackController extends AbstractRestfulJsonController
             return $this->getApiResponse(null, 401);
         }
 
+        $suUserPassword = (
+            isset($data['suUserPassword'])
+            ? $data ['suUserPassword']
+            : null
+        );
+
         try {
-            $result = $service->switchBack();
+            $result = $service->switchBack($suUserPassword);
         } catch (\Exception $exception) {
             return $this->getApiResponse(
                 null,
@@ -114,6 +61,11 @@ class RpcSwitchBackController extends AbstractRestfulJsonController
             );
         }
 
-        return $this->getApiResponse($result);
+        $data = [
+            'userId' => $suUser->getId(),
+            'userName' => $suUser->getUsername(),
+        ];
+
+        return $this->getApiResponse($data);
     }
 }

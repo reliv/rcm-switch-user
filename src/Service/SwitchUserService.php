@@ -45,11 +45,20 @@ class SwitchUserService
     protected $entityManager;
 
     /**
+     * @var string
+     */
+    protected $switchBackMethod = 'auth';
+
+    protected $aclConfig;
+
+    /**
+     * @param array          $config
      * @param RcmUserService $rcmUserService
      * @param Restriction    $restriction
      * @param EntityManager  $entityManager
      */
     public function __construct(
+        $config,
         RcmUserService $rcmUserService,
         Restriction $restriction,
         EntityManager $entityManager
@@ -57,6 +66,8 @@ class SwitchUserService
         $this->rcmUserService = $rcmUserService;
         $this->restriction = $restriction;
         $this->entityManager = $entityManager;
+        $this->switchBackMethod = $config['Rcm\\SwitchUser']['switchBackMethod'];
+        $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
     }
 
     /**
@@ -92,6 +103,7 @@ class SwitchUserService
                 'SU was attempted by user without access',
                 false
             );
+
             return false;
         }
 
@@ -112,7 +124,7 @@ class SwitchUserService
         }
 
         // Force login as $targetUser
-        $this->rcmUserService->setIdentity($targetUser);
+        $this->rcmUserService->getUserAuthService()->setIdentity($targetUser);
         // add SU property to target user
         $targetUser->setProperty(self::SU_PROPERTY, $currentUser->getId());
 
@@ -128,11 +140,24 @@ class SwitchUserService
     }
 
     /**
+     * switchBack
+     *
+     * @param null $suUserPassword
+     *
+     * @return bool
+     */
+    public function switchBack($suUserPassword = null)
+    {
+        $method = 'switchBack'.ucfirst($this->switchBackMethod);
+        return $this->$method($suUserPassword);
+    }
+
+    /**
      * switchBack Less secure way to switch user back
      *
      * @return bool
      */
-    public function switchBack()
+    public function switchBackBasic()
     {
         // Get current user
         $targetUser = $this->rcmUserService->getCurrentUser();
@@ -146,7 +171,7 @@ class SwitchUserService
         $suUserId = $suUser->getId();
 
         // Force login as $suUser
-        $this->rcmUserService->setIdentity($suUser);
+        $this->rcmUserService->getUserAuthService()->setIdentity($suUser);
 
         // log action
         $this->logAction(
@@ -180,7 +205,7 @@ class SwitchUserService
 
         $suUser->setPassword($suUserPassword);
         $result = $this->rcmUserService->authenticate($suUser);
-        if (!$result->isSuccess()) {
+        if (!$result->isValid()) {
             // ERROR
             // log action
             $this->logAction(
@@ -189,6 +214,7 @@ class SwitchUserService
                 'SU attempted to switched back, provided incorrect credentials',
                 true
             );
+
             return false;
         }
 
@@ -290,5 +316,44 @@ class SwitchUserService
         }
 
         return $suUser;
+    }
+
+    /**
+     * isAllowed
+     *
+     * @param $suUser
+     *
+     * @return bool|mixed
+     */
+    public function isAllowed($suUser)
+    {
+        if (empty($suUser)) {
+            return false;
+        }
+        $aclConfig = $this->aclConfig;
+
+        return $this->rcmUserService->isUserAllowed(
+            $aclConfig['resourceId'],
+            $aclConfig['privilege'],
+            $aclConfig['providerId'],
+            $suUser
+        );
+    }
+
+    /**
+     * currentUserIsAllowed
+     *
+     * @return bool|mixed
+     */
+    public function currentUserIsAllowed()
+    {
+        $adminUser = $this->getCurrentSuUser();
+        $targetUser = $this->rcmUserService->getCurrentUser();
+
+        if (empty($adminUser)) {
+            $adminUser = $targetUser;
+        }
+
+        return $this->isAllowed($adminUser);
     }
 }
