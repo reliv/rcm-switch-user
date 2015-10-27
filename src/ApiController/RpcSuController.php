@@ -2,7 +2,9 @@
 
 namespace Rcm\SwitchUser\ApiController;
 
+use RcmUser\User\Entity\User;
 use Reliv\RcmApiLib\Controller\AbstractRestfulJsonController;
+use Reliv\RcmApiLib\Model\ApiMessage;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
 use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
 
@@ -34,19 +36,18 @@ class RpcSuController extends BaseApiController
 
         $suUser = $service->getCurrentSuUser();
 
-        $data = [
-            'isSu' => false,
-            'user' => null,
-        ];
+        $resultData = $this->buildResult(false, null);
 
         if (empty($suUser)) {
-            return $this->getApiResponse($data, 401);
+            return $this->getApiResponse($resultData);
         }
-        // only expose some info
-        $data['isSu'] = true;
-        $data['user'] = $this->getRcmUserService()->getCurrentUser();
 
-        return $this->getApiResponse($data);
+        $resultData = $this->buildResult(
+            true,
+            $this->getRcmUserService()->getCurrentUser()
+        );
+
+        return $this->getApiResponse($resultData);
     }
 
     /**
@@ -68,9 +69,11 @@ class RpcSuController extends BaseApiController
 
         $user = $service->getUser($data['switchToUserId']);
 
+        $resultData = $this->buildResult(false, null);
+
         if (empty($user)) {
             return $this->getApiResponse(
-                null,
+                $resultData,
                 400,
                 new HttpStatusCodeApiMessage(400)
             );
@@ -80,20 +83,41 @@ class RpcSuController extends BaseApiController
             $result = $service->switchToUser($user);
         } catch (\Exception $exception) {
             return $this->getApiResponse(
-                null,
+                $resultData,
                 500,
                 new ExceptionApiMessage($exception)
             );
         }
 
-        if (empty($result)) {
+        if (!$result->isSuccess()) {
             return $this->getApiResponse(
-                null,
+                $resultData,
                 406,
-                new HttpStatusCodeApiMessage(406)
+                new ApiMessage('failure', $result->getMessage(), 'rpcSu', 'invalid')
             );
         }
 
-        return $this->getApiResponse($user);
+        $resultData = $this->buildResult(true, $user);
+
+        return $this->getApiResponse($resultData);
+    }
+
+    /**
+     * buildResult
+     *
+     * @param bool      $isSu
+     * @param User|null $impersonatedUser
+     *
+     * @return mixed
+     */
+    protected function buildResult($isSu, $impersonatedUser)
+    {
+        $data = [];
+        $data['isSu'] = $isSu;
+        $data['impersonatedUser'] = $impersonatedUser;
+        $data['switchBackMethod'] = $this->getSwitchUserService()
+            ->getSwitchBackMethod();
+
+        return $data;
     }
 }

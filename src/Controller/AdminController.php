@@ -70,7 +70,14 @@ class AdminController extends AbstractActionController
 
         $adminUser = $switchUserService->getCurrentSuUser();
         $targetUser = $rcmUserService->getCurrentUser();
-        $view->setVariable('targetUser', $targetUser);
+        $view->setVariable(
+            'targetUser',
+            $targetUser
+        );
+        $view->setVariable(
+            'switchBackMethod',
+            $switchUserService->getSwitchBackMethod()
+        );
 
         if (empty($adminUser)) {
             $view->setVariable('targetUser', null);
@@ -79,6 +86,7 @@ class AdminController extends AbstractActionController
 
         if (!$this->isAllowed($adminUser)) {
             $this->getResponse()->setStatusCode(401);
+
             return $this->getResponse();
         }
 
