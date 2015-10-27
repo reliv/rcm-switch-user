@@ -58,7 +58,7 @@ class SuUserRestriction implements Restriction
         );
 
         if ($isAllowed) {
-            return new RestrictionResult(false, 'Cannot SU as user with SU access');
+            return new RestrictionResult(false, 'Cannot switch to this user');
         }
 
         return new RestrictionResult(true);

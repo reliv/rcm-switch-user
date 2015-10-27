@@ -1,28 +1,29 @@
 <style type="text/css">
-    .rcm-switch-user-admin .row {
-        border-bottom: solid 1px rgba(0,0,0,.1);
-    }
     .rcm-switch-user-admin button,
     .rcm-switch-user-admin label,
     .rcm-switch-user-admin p {
-        margin: 5px 10px 5px 10px;
+        margin: 5px 0px 5px 0px;
+    }
+
+    .rcm-switch-user-inject .alert {
+        padding: 3px;
+    }
+
+    .rcm-switch-user-inject .alert-caution {
+        background-color: #FFFFAA;
+        border-color: #FFFF00;
+        color: #999900;
     }
 </style>
 <div class="rcm-switch-user-admin container-fluid" ng-hide="loading">
-    <div class="row" ng-show="isSu">
-        <div class="col-md-3">
-            <label>Impersonating:</label>
+    <div class="row form-inline">
+        <div class="col-md-12" ng-show="message">
+            <div class="alert alert-warning" role="alert">
+                {{message.value}}
+            </div>
         </div>
-        <div class="col-md-4">
-            <p>id: {{impersonatedUser.id}}</p>
-        </div>
-        <div class="col-md-5">
-            <p>username: {{impersonatedUser.username}}</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label for="switchToUserId">Switch to User ID:</label>
+        <div class="col-md-3" ng-show="isSu">
+            <label>Impersonating: {{impersonatedUser.id}}</label>
         </div>
         <div class="col-md-4">
             <input class="form-control input-sm"
@@ -30,30 +31,21 @@
                    placeholder="User Id"
                    ng-model="switchToUser"
                    type="text"/>
-        </div>
-        <div class="col-md-5">
             <button class="btn btn-default btn-sm"
                     ng-click="switchTo()"
-                    type="button">Switch to this User
+                    type="button">Switch to User
             </button>
         </div>
-    </div>
-    <div class="row" ng-show="isSu">
-        <div class="col-md-3">
-            <label for="suUserPassword">SU User:</label>
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-4" ng-show="isSu">
             <input class="form-control input-sm"
                    id="suUserPassword"
                    placeholder="password"
                    ng-model="suUserPassword"
                    ng-show="switchBackMethod == 'auth'"
                    type="password"/>
-        </div>
-        <div class="col-md-5">
             <button class="btn btn-primary btn-sm"
                     ng-click="switchBack()"
-                    type="button">End Impersonation Session
+                    type="button">End Impersonation
             </button>
         </div>
     </div>

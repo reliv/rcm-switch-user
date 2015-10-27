@@ -136,7 +136,7 @@ class SwitchUserService
                 false
             );
 
-            $result->setSuccess(false, 'Access denied');
+            $result->setSuccess(false, $restictionResult->getMessage());
 
             return $result;
         }

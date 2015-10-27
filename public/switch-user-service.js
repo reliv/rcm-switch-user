@@ -40,6 +40,10 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
         switchUserBack: '/api/rpc/switch-user-back'
     };
 
+    /**
+     * changeSu
+     * @param data
+     */
     var changeSu = function (data) {
         if (!data) {
             self.suData = {
@@ -53,10 +57,29 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
     };
 
     /**
+     * buildValidData
+     * @param data
+     * @returns {*}
+     */
+    var buildValidData = function (data) {
+        if (!data) {
+            data = {
+                isSu: false,
+                impersonatedUser: null,
+                switchBackMethod: self.suData.switchBackMethod
+            };
+        }
+
+        return data;
+    };
+
+    /**
      * onSuChange
      * @param data
      */
     var onSuChange = function (data) {
+
+        data = buildValidData(data);
 
         changeSu(data);
 
@@ -156,23 +179,11 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
                     );
                 },
                 success: function (response) {
-                    onSuChange(
-                        {
-                            isSu: false,
-                            impersonatedUser: null,
-                            switchBackMethod: self.suData.switchBackMethod
-                        }
-                    );
+                    onSuChange();
                     onSuccess(response);
                 },
                 error: function (response) {
-                    onSuChange(
-                        {
-                            isSu: false,
-                            impersonatedUser: null,
-                            switchBackMethod: self.suData.switchBackMethod
-                        }
-                    );
+                    onSuChange();
                     onError(response);
                 }
             }

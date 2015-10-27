@@ -60,7 +60,7 @@ class AclRestriction implements Restriction
         if (!$isAllowed) {
             return new RestrictionResult(
                 false,
-                'Current user does not have access to SU'
+                'Current user cannot switch user'
             );
         }
 
