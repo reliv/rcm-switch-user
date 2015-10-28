@@ -245,7 +245,7 @@ class SwitchUserService
                 true
             );
 
-            $result->setSuccess(false, $authResult->getMessage());
+            $result->setSuccess(false, $authResult->getMessages()[0]);
 
             return $result;
         }

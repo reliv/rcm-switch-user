@@ -8,11 +8,13 @@ angular.module('rcmSwitchUser').directive(
         'rcmSwitchUserService',
         'rcmEventManager',
         'rcmApiLibMessageService',
+        '$window',
         function (
             $sce,
             rcmSwitchUserService,
             rcmEventManager,
-            rcmApiLibMessageService
+            rcmApiLibMessageService,
+            $window
         ) {
 
             /**
@@ -33,11 +35,18 @@ angular.module('rcmSwitchUser').directive(
 
                 $scope.message = null;
 
+                /**
+                 *
+                 */
                 var apiInit = function() {
                     $scope.loading = true;
                     $scope.message = null;
                 };
 
+                /**
+                 *
+                 * @param messages
+                 */
                 var handleMessages = function(messages) {
                     $scope.message = null;
                     rcmApiLibMessageService.getPrimaryMessage(
@@ -50,32 +59,51 @@ angular.module('rcmSwitchUser').directive(
                     );
                 };
 
+                /**
+                 *
+                 * @param response
+                 */
                 var onSwitchToSuccess = function (response) {
-                    //$scope.$apply();
                 };
 
+                /**
+                 *
+                 * @param response
+                 */
                 var onSwitchToError = function (response) {
-                    //$scope.$apply();
                     handleMessages(response.messages);
                 };
 
+                /**
+                 *
+                 * @param response
+                 */
                 var onSwitchBackAndToSuccess = function (response) {
                     onSwitchBackSuccess(response);
                     switchTo();
                 };
 
+                /**
+                 *
+                 * @param response
+                 */
                 var onSwitchBackSuccess = function (response) {
                     $scope.suUserPassword = null;
                     handleMessages(response.messages);
-                    //$scope.$apply();
                 };
 
+                /**
+                 *
+                 * @param response
+                 */
                 var onSwitchBackError = function (response) {
                     $scope.suUserPassword = null;
                     handleMessages(response.messages);
-                    //$scope.$apply();
                 };
 
+                /**
+                 *
+                 */
                 var switchTo = function() {
                     apiInit();
                     rcmSwitchUserService.switchUser(
@@ -85,6 +113,9 @@ angular.module('rcmSwitchUser').directive(
                     );
                 };
 
+                /**
+                 *
+                 */
                 $scope.switchTo = function () {
                     if($scope.isSu) {
                         apiInit();
@@ -99,6 +130,9 @@ angular.module('rcmSwitchUser').directive(
                     switchTo();
                 };
 
+                /**
+                 *
+                 */
                 $scope.switchBack = function () {
                     apiInit();
                     rcmSwitchUserService.switchUserBack(
@@ -108,6 +142,9 @@ angular.module('rcmSwitchUser').directive(
                     );
                 };
 
+                /**
+                 *
+                 */
                 rcmEventManager.on(
                     'rcmSwitchUserService.suChange',
                     function (data) {

@@ -63,7 +63,7 @@ return [
          * 'basic' = no auth required
          * 'auth'  = password auth required to switch back to admin
          */
-        'switchBackMethod' => 'basic',
+        'switchBackMethod' => 'auth',
     ],
     /* RcmUser Config */
     'RcmUser' => [
