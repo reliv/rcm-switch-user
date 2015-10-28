@@ -9,12 +9,14 @@ angular.module('rcmSwitchUser').directive(
         'rcmEventManager',
         'rcmApiLibMessageService',
         '$window',
+        'rcmLoading',
         function (
             $sce,
             rcmSwitchUserService,
             rcmEventManager,
             rcmApiLibMessageService,
-            $window
+            $window,
+            rcmLoading
         ) {
 
             /**
@@ -25,26 +27,33 @@ angular.module('rcmSwitchUser').directive(
              */
             function link($scope, element, attrs) {
 
-                $scope.loading = true;
+                $scope.loading = false;
                 $scope.isSu = false;
                 $scope.impersonatedUser = null;
                 $scope.switchBackMethod = 'auth';
-
                 $scope.switchToUser = null;
                 $scope.suUserPassword = null;
-
                 $scope.message = null;
 
+                var setLoading = function(isLoading) {
+                    $scope.loading = isLoading;
+                    var loadingInt = Number(!isLoading);
+                    rcmLoading.setLoading(
+                        'rcmSwitchUserAdmin.loading',
+                        loadingInt
+                    );
+                };
+
                 /**
-                 *
+                 * apiInit
                  */
                 var apiInit = function() {
-                    $scope.loading = true;
+                    setLoading(true);
                     $scope.message = null;
                 };
 
                 /**
-                 *
+                 *handleMessages
                  * @param messages
                  */
                 var handleMessages = function(messages) {
@@ -60,49 +69,52 @@ angular.module('rcmSwitchUser').directive(
                 };
 
                 /**
-                 *
+                 * onSwitchToSuccess
                  * @param response
                  */
                 var onSwitchToSuccess = function (response) {
+                    $window.location.reload();
                 };
 
                 /**
-                 *
+                 * onSwitchToError
                  * @param response
                  */
                 var onSwitchToError = function (response) {
                     handleMessages(response.messages);
+                    setLoading(false);
                 };
 
                 /**
-                 *
+                 * onSwitchBackAndToSuccess
                  * @param response
                  */
                 var onSwitchBackAndToSuccess = function (response) {
-                    onSwitchBackSuccess(response);
+                    $scope.suUserPassword = null;
                     switchTo();
                 };
 
                 /**
-                 *
+                 * onSwitchBackSuccess
                  * @param response
                  */
                 var onSwitchBackSuccess = function (response) {
                     $scope.suUserPassword = null;
-                    handleMessages(response.messages);
+                    $window.location.reload();
                 };
 
                 /**
-                 *
+                 * onSwitchBackError
                  * @param response
                  */
                 var onSwitchBackError = function (response) {
                     $scope.suUserPassword = null;
                     handleMessages(response.messages);
+                    setLoading(false);
                 };
 
                 /**
-                 *
+                 * switchTo
                  */
                 var switchTo = function() {
                     apiInit();
@@ -114,7 +126,7 @@ angular.module('rcmSwitchUser').directive(
                 };
 
                 /**
-                 *
+                 * switchTo
                  */
                 $scope.switchTo = function () {
                     if($scope.isSu) {
@@ -131,7 +143,7 @@ angular.module('rcmSwitchUser').directive(
                 };
 
                 /**
-                 *
+                 * switchBack
                  */
                 $scope.switchBack = function () {
                     apiInit();
@@ -143,7 +155,7 @@ angular.module('rcmSwitchUser').directive(
                 };
 
                 /**
-                 *
+                 * rcmEventManager.on
                  */
                 rcmEventManager.on(
                     'rcmSwitchUserService.suChange',
@@ -151,8 +163,7 @@ angular.module('rcmSwitchUser').directive(
                         $scope.isSu = data.isSu;
                         $scope.impersonatedUser = data.impersonatedUser;
                         $scope.switchBackMethod = data.switchBackMethod;
-                        $scope.loading = false;
-                        //$scope.$apply();
+                        //$scope.loading = false;
                     }
                 );
             }
