@@ -1,5 +1,25 @@
 <?php
 return [
+    /* ASSET MANAGER */
+    'asset_manager' => [
+        'resolver_configs' => [
+            'aliases' => [
+                'modules/switch-user/' => __DIR__ . '/../public/',
+            ],
+            'collections' => [
+                'modules/switch-user/switch-user.js' => [
+                    'modules/switch-user/switch-user-module.js',
+                    'modules/switch-user/switch-user-service.js',
+                    'modules/switch-user/switch-user-message-inject.js',
+                    'modules/switch-user/switch-user-message.js',
+                    'modules/switch-user/switch-user-admin.js',
+                ],
+                'modules/rcm/modules.js' => [
+                    'modules/switch-user/switch-user.js',
+                ]
+            ],
+        ],
+    ],
     /* CONTROLLERS */
     'controllers' => [
         'invokables' => [
@@ -28,22 +48,40 @@ return [
             ]
         ]
     ],
-    /* Configuration */
+    /* Rcm\SwitchUser Configuration */
     'Rcm\\SwitchUser' => [
         'restrictions' => [
             'Rcm\SwitchUser\Restriction\AclRestriction',
             'Rcm\SwitchUser\Restriction\SuUserRestriction',
         ],
         'acl' => [
-            'resourceId' => 'sites',
-            'privilege' => 'admin',
-            'providerId' => 'Rcm\Acl\ResourceProvider'
+            'resourceId' => 'switchuser',
+            'privilege' => 'execute',
+            'providerId' => 'Rcm\SwitchUser\Acl\ResourceProvider'
         ],
         /*
          * 'basic' = no auth required
          * 'auth'  = password auth required to switch back to admin
          */
-        'switchBackMethod' => 'auth',
+        'switchBackMethod' => 'basic',
+    ],
+    /* RcmUser Config */
+    'RcmUser' => [
+        'Acl\Config' => [
+            'ResourceProviders' => [
+                'Rcm\SwitchUser\Acl\ResourceProvider' => [
+                    'switchuser' => [
+                        'resourceId' => 'switchuser',
+                        'parentResourceId' => null,
+                        'privileges' => [
+                            'execute',
+                        ],
+                        'name' => 'RCM Switch User.',
+                        'description' => 'Switch user ACL resource.',
+                    ],
+                ],
+            ],
+        ],
     ],
     /* ROUTES */
     'router' => [
@@ -66,7 +104,6 @@ return [
                     ]
                 ]
             ],
-
             'Rcm\SwitchUser\Controller\Admin' => [
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => [
@@ -107,6 +144,7 @@ return [
             'Rcm\SwitchUser\Restriction' => 'Rcm\SwitchUser\Factory\CompositeRestrictionFactory'
         ],
     ],
+    /* VIEW MANAGER*/
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',

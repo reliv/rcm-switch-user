@@ -2,6 +2,7 @@
 
 namespace Rcm\SwitchUser\ApiController;
 
+use Reliv\RcmApiLib\Model\ApiMessage;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
 use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
 
@@ -53,11 +54,11 @@ class RpcSwitchBackController extends BaseApiController
             );
         }
 
-        if (empty($result)) {
+        if (!$result->isSuccess()) {
             return $this->getApiResponse(
                 null,
                 406,
-                new HttpStatusCodeApiMessage(406)
+                new ApiMessage('failure', $result->getMessage(), 'rpcSwitchBack', 'invalid')
             );
         }
 

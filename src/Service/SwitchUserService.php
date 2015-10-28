@@ -4,8 +4,8 @@ namespace Rcm\SwitchUser\Service;
 
 use Doctrine\ORM\EntityManager;
 use Rcm\SwitchUser\Entity\LogEntry;
-use Rcm\SwitchUser\Entity\SwitchUserLog;
 use Rcm\SwitchUser\Restriction\Restriction;
+use Rcm\SwitchUser\Result;
 use RcmUser\Service\RcmUserService;
 use RcmUser\User\Entity\User;
 
@@ -49,6 +49,9 @@ class SwitchUserService
      */
     protected $switchBackMethod = 'auth';
 
+    /**
+     * @var array
+     */
     protected $aclConfig;
 
     /**
@@ -71,6 +74,16 @@ class SwitchUserService
     }
 
     /**
+     * getSwitchBackMethod
+     *
+     * @return string
+     */
+    public function getSwitchBackMethod()
+    {
+        return $this->switchBackMethod;
+    }
+
+    /**
      * getUser
      *
      * @param $userId
@@ -87,7 +100,7 @@ class SwitchUserService
      *
      * @param User $targetUser
      *
-     * @return bool success
+     * @return Result
      * @throws \RcmUser\Exception\RcmUserException
      */
     public function switchToUser(User $targetUser)
@@ -95,32 +108,37 @@ class SwitchUserService
         // Get current user
         $currentUser = $this->rcmUserService->getCurrentUser();
 
+        $result = new Result();
+
         if (empty($currentUser)) {
             // ERROR
             $this->logAction(
                 'UNKNOWN',
                 $targetUser->getId(),
-                'SU was attempted by user without access',
+                'SU was attempted by user who is not logged in',
                 false
             );
 
-            return false;
+            $result->setSuccess(false, 'Access denied');
+
+            return $result;
         }
 
         // Run restrictions
-        $result = $this->restriction->allowed($currentUser, $targetUser);
+        $restictionResult = $this->restriction->allowed($currentUser, $targetUser);
 
-        if (!$result->isAllowed()) {
+        if (!$restictionResult->isAllowed()) {
             // log action
             $this->logAction(
                 $currentUser->getId(),
                 $targetUser->getId(),
-                'SU was attempted by user without access',
+                'SU was attempted by user without access due to restriction',
                 false
             );
 
-            // ERROR
-            return false;
+            $result->setSuccess(false, $restictionResult->getMessage());
+
+            return $result;
         }
 
         // Force login as $targetUser
@@ -136,7 +154,9 @@ class SwitchUserService
             true
         );
 
-        return true;
+        $result->setSuccess(true, 'SU was successful');
+
+        return $result;
     }
 
     /**
@@ -144,18 +164,19 @@ class SwitchUserService
      *
      * @param null $suUserPassword
      *
-     * @return bool
+     * @return Result
      */
     public function switchBack($suUserPassword = null)
     {
-        $method = 'switchBack'.ucfirst($this->switchBackMethod);
+        $method = 'switchBack' . ucfirst($this->getSwitchBackMethod());
+
         return $this->$method($suUserPassword);
     }
 
     /**
      * switchBack Less secure way to switch user back
      *
-     * @return bool
+     * @return Result
      */
     public function switchBackBasic()
     {
@@ -164,8 +185,11 @@ class SwitchUserService
 
         $suUser = $this->getSuUser($targetUser);
 
+        $result = new Result();
+
         if (empty($suUser)) {
-            return false;
+            $result->setSuccess(false, 'Not in SU session');
+            return $result;
         }
 
         $suUserId = $suUser->getId();
@@ -181,7 +205,9 @@ class SwitchUserService
             true
         );
 
-        return true;
+        $result->setSuccess(true, 'SU switch back was successful');
+
+        return $result;
     }
 
     /**
@@ -189,7 +215,7 @@ class SwitchUserService
      *
      * @param string $suUserPassword
      *
-     * @return bool
+     * @return Result
      */
     public function switchBackAuth($suUserPassword)
     {
@@ -198,14 +224,18 @@ class SwitchUserService
 
         $suUser = $this->getSuUser($targetUser);
 
+        $result = new Result();
+
         if (empty($suUser)) {
-            return false;
+            $result->setSuccess(false, 'Not in SU session');
+            return $result;
         }
+
         $suUserId = $suUser->getId();
 
         $suUser->setPassword($suUserPassword);
-        $result = $this->rcmUserService->authenticate($suUser);
-        if (!$result->isValid()) {
+        $authResult = $this->rcmUserService->authenticate($suUser);
+        if (!$authResult->isValid()) {
             // ERROR
             // log action
             $this->logAction(
@@ -215,7 +245,9 @@ class SwitchUserService
                 true
             );
 
-            return false;
+            $result->setSuccess(false, $authResult->getMessage());
+
+            return $result;
         }
 
         // log action
@@ -226,7 +258,9 @@ class SwitchUserService
             true
         );
 
-        return true;
+        $result->setSuccess(true, 'SU switch back was successful');
+
+        return $result;
     }
 
     /**
