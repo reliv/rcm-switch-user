@@ -4,7 +4,6 @@ namespace Rcm\SwitchUser\ApiController;
 
 use Reliv\RcmApiLib\Model\ApiMessage;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
-use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
 
 /**
  * Class RpcSwitchBackController
@@ -64,7 +63,7 @@ class RpcSwitchBackController extends BaseApiController
 
         $data = [
             'userId' => $suUser->getId(),
-            'userName' => $suUser->getUsername(),
+            'username' => $suUser->getUsername(),
         ];
 
         return $this->getApiResponse($data);

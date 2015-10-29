@@ -26,27 +26,29 @@
             <label>Impersonating: {{impersonatedUser.id}} {{impersonatedUser.username}}</label>
         </div>
         <div class="col-md-4">
-            <input class="form-control input-sm"
-                   id="switchToUserId"
-                   placeholder="User Id"
-                   ng-model="switchToUser"
-                   type="text"/>
-            <button class="btn btn-default btn-sm"
-                    ng-click="switchTo()"
-                    type="button">Switch to User
-            </button>
+            <form ng-submit="switchTo()">
+                <input class="form-control input-sm"
+                       id="switchToUserName"
+                       placeholder="Username"
+                       ng-model="switchToUser"
+                       type="text"/>
+                <button class="btn btn-default btn-sm"
+                        type="submit">Switch to User
+                </button>
+            </form>
         </div>
         <div class="col-md-4" ng-show="isSu">
-            <input class="form-control input-sm"
-                   id="suUserPassword"
-                   placeholder="password"
-                   ng-model="suUserPassword"
-                   ng-show="switchBackMethod == 'auth'"
-                   type="password"/>
-            <button class="btn btn-primary btn-sm"
-                    ng-click="switchBack()"
-                    type="button">End Impersonation
-            </button>
+            <form ng-submit="switchBack()">
+                <input class="form-control input-sm"
+                       id="suUserPassword"
+                       placeholder="password"
+                       ng-model="suUserPassword"
+                       ng-show="switchBackMethod == 'auth'"
+                       type="password"/>
+                <button class="btn btn-primary btn-sm"
+                        type="submit">End Impersonation
+                </button>
+            </form>
         </div>
     </div>
 </div>

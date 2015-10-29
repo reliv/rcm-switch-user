@@ -120,14 +120,14 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
 
     /**
      * switchUser
-     * @param switchToUserId
+     * @param switchToUsername
      * @param onSuccess
      * @param onError
      */
-    self.switchUser = function (switchToUserId, onSuccess, onError) {
+    self.switchUser = function (switchToUsername, onSuccess, onError) {
 
         var data = {
-            switchToUserId: switchToUserId
+            switchToUsername: switchToUsername
         };
 
         rcmApiLibService.post(
