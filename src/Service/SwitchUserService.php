@@ -4,6 +4,7 @@ namespace Rcm\SwitchUser\Service;
 
 use Doctrine\ORM\EntityManager;
 use Rcm\SwitchUser\Entity\LogEntry;
+use Rcm\SwitchUser\Model\SuProperty;
 use Rcm\SwitchUser\Restriction\Restriction;
 use Rcm\SwitchUser\Result;
 use RcmUser\Service\RcmUserService;
@@ -24,11 +25,6 @@ use RcmUser\User\Entity\User;
  */
 class SwitchUserService
 {
-    /**
-     * SU_PROPERTY
-     */
-    const SU_PROPERTY = 'suUser';
-
     /**
      * @var RcmUserService
      */
@@ -55,10 +51,10 @@ class SwitchUserService
     protected $aclConfig;
 
     /**
-     * @param array          $config
+     * @param array $config
      * @param RcmUserService $rcmUserService
-     * @param Restriction    $restriction
-     * @param EntityManager  $entityManager
+     * @param Restriction $restriction
+     * @param EntityManager $entityManager
      */
     public function __construct(
         $config,
@@ -86,13 +82,13 @@ class SwitchUserService
     /**
      * getUser
      *
-     * @param $userId
+     * @param $userName
      *
      * @return null|User
      */
-    public function getUser($userId)
+    public function getUser($userName)
     {
-        return $this->rcmUserService->getUserById($userId);
+        return $this->rcmUserService->getUserByUsername($userName);
     }
 
     /**
@@ -144,7 +140,10 @@ class SwitchUserService
         // Force login as $targetUser
         $this->rcmUserService->getUserAuthService()->setIdentity($targetUser);
         // add SU property to target user
-        $targetUser->setProperty(self::SU_PROPERTY, $currentUser->getId());
+        $targetUser->setProperty(
+            SuProperty::SU_PROPERTY,
+            new SuProperty($currentUser)
+        );
 
         // log action
         $this->logAction(
@@ -189,6 +188,7 @@ class SwitchUserService
 
         if (empty($suUser)) {
             $result->setSuccess(false, 'Not in SU session');
+
             return $result;
         }
 
@@ -228,6 +228,7 @@ class SwitchUserService
 
         if (empty($suUser)) {
             $result->setSuccess(false, 'Not in SU session');
+
             return $result;
         }
 
@@ -289,7 +290,13 @@ class SwitchUserService
      */
     public function userIsSu(User $user)
     {
-        return $user->getProperty(self::SU_PROPERTY);
+        /** @var SuProperty $suProperty */
+        $suProperty = $user->getProperty(SuProperty::SU_PROPERTY);
+        if ($suProperty === null) {
+            return null;
+        }
+
+        return $suProperty->getUserId();
     }
 
     /**
@@ -335,12 +342,15 @@ class SwitchUserService
      */
     public function getSuUser(User $user)
     {
-        $suUserId = $user->getProperty(self::SU_PROPERTY);
+        /** @var SuProperty $suProperty */
+        $suProperty = $user->getProperty(SuProperty::SU_PROPERTY);
 
-        if (empty($suUserId)) {
+        if (empty($suProperty)) {
             // ERROR
             return null;
         }
+
+        $suUserId = $suProperty->getUserId();
 
         $suUser = $this->getUser($suUserId);
 

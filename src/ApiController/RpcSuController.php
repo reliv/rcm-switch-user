@@ -3,7 +3,6 @@
 namespace Rcm\SwitchUser\ApiController;
 
 use RcmUser\User\Entity\User;
-use Reliv\RcmApiLib\Controller\AbstractRestfulJsonController;
 use Reliv\RcmApiLib\Model\ApiMessage;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
 use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
@@ -26,7 +25,7 @@ class RpcSuController extends BaseApiController
     /**
      * create
      *
-     * @param array $data ['switchToUserId' => '{MY_ID}']
+     * @param array $data ['switchToUsername' => '{MY_ID}']
      *
      * @return \Reliv\RcmApiLib\Http\ApiResponse
      */
@@ -53,7 +52,7 @@ class RpcSuController extends BaseApiController
     /**
      * create
      *
-     * @param array $data ['switchToUserId' => '{MY_ID}']
+     * @param array $data ['switchToUsername' => '{MY_ID}']
      *
      * @return \Reliv\RcmApiLib\Http\ApiResponse
      */
@@ -67,7 +66,7 @@ class RpcSuController extends BaseApiController
 
         $service = $this->getSwitchUserService();
 
-        $user = $service->getUser($data['switchToUserId']);
+        $user = $service->getUser($data['switchToUsername']);
 
         $resultData = $this->buildResult(false, null);
 
