@@ -43,6 +43,16 @@ class SuProperty extends AbstractApiModel
      *
      * @return mixed
      */
+    public function getUser()
+    {
+        return $this->suUser;
+    }
+
+    /**
+     * getUserId
+     *
+     * @return mixed
+     */
     public function getUserId()
     {
         return $this->suUser->getId();
