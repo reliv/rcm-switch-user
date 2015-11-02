@@ -350,9 +350,7 @@ class SwitchUserService
             return null;
         }
 
-        $suUserId = $suProperty->getUserId();
-
-        $suUser = $this->getUser($suUserId);
+        $suUser = $suProperty->getUser();
 
         if (empty($suUser)) {
             // ERROR
