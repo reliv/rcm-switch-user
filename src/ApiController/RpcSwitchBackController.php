@@ -31,7 +31,7 @@ class RpcSwitchBackController extends BaseApiController
     {
         $service = $this->getSwitchUserService();
 
-        $suUser = $service->getCurrentSuUser();
+        $suUser = $service->getCurrentImpersonatorUser();
 
         if (!$this->isAllowed($suUser)) {
             return $this->getApiResponse(null, 401);

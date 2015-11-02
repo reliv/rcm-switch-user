@@ -68,7 +68,7 @@ class AdminController extends AbstractActionController
 
         $view = new ViewModel();
 
-        $adminUser = $switchUserService->getCurrentSuUser();
+        $adminUser = $switchUserService->getCurrentImpersonatorUser();
         $targetUser = $rcmUserService->getCurrentUser();
         $view->setVariable(
             'targetUser',

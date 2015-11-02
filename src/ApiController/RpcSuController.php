@@ -33,7 +33,7 @@ class RpcSuController extends BaseApiController
     {
         $service = $this->getSwitchUserService();
 
-        $suUser = $service->getCurrentSuUser();
+        $suUser = $service->getCurrentImpersonatorUser();
 
         $resultData = $this->buildResult(false, null);
 
