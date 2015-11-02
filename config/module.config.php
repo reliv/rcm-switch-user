@@ -65,6 +65,17 @@ return [
          */
         'switchBackMethod' => 'auth',
     ],
+    /* Plugin Config */
+    'rcmPlugin' => [
+        'RcmSwitchUser' => [
+            'type' => 'Admin',
+            'display' => 'Switch User',
+            'tooltip' => 'Switch User Admin options',
+            'icon' => '',
+            'defaultInstanceConfig' => [],
+            'canCache' => false
+        ],
+    ],
     /* RcmUser Config */
     'RcmUser' => [
         'Acl\Config' => [
@@ -107,7 +118,7 @@ return [
             'Rcm\SwitchUser\Controller\Admin' => [
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => [
-                    'route' => '/switch-user',
+                    'route' => '/admin/switch-user',
                     'defaults' => [
                         'controller' => 'Rcm\SwitchUser\Controller\AdminController',
                         'action' => 'index',
