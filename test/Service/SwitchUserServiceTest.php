@@ -10,9 +10,10 @@ use RcmUser\User\Entity\User;
 
 class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public function getUnit()
-    {
-        $this->configMock = [
+    public $rcmUserServiceMock;
+
+    public $configMock
+        = [
             'Rcm\\SwitchUser' => [
                 'switchBackMethod' => 'auth',
                 'acl' => [
@@ -23,20 +24,32 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
+    /**
+     * getUnit HAPPY PATH
+     *
+     * @return SwitchUserService
+     */
+    public function getUnit()
+    {
         /** @var \RcmUser\User\Entity\User $rcmUserMock */
-        $this->rcmUserMock = $this->getMockBuilder('RcmUser\User\Entity\User')
+        $this->rcmUserMock
+            = $this->getMockBuilder('RcmUser\User\Entity\User')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->rcmUSerAuthenticationServiceMock = $this->getMockBuilder('RcmUser\Authentication\Service\UserAuthenticationService')
+        $this->rcmUSerAuthenticationServiceMock = $this->getMockBuilder(
+            'RcmUser\Authentication\Service\UserAuthenticationService'
+        )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->rcmUSerAuthenticationServiceMock->method('setIdentity')
-        ->will($this->returnValue(null));
+            ->will($this->returnValue(null));
 
         /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
-        $this->rcmUserServiceMock = $this->getMockBuilder('RcmUser\Service\RcmUserService')
+        $this->rcmUserServiceMock = $this->getMockBuilder(
+            'RcmUser\Service\RcmUserService'
+        )
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -49,31 +62,33 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->rcmUserServiceMock->method('getUserAuthService')
             ->will($this->returnValue($this->rcmUSerAuthenticationServiceMock));
 
-        /** @var Result $this->restrictionResultMock */
+        /** @var Result $this ->restrictionResultMock */
         $this->restrictionResultMock = $this->getMockBuilder(
             'Rcm\SwitchUser\Restriction\Result'
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->restrictionResultMock->method('allowed')
-            ->will($this->returnValue($this->restrictionResultMock));
+        $this->restrictionResultMock->method('isAllowed')
+            ->will($this->returnValue(true));
 
-        /** @var \Rcm\SwitchUser\Restriction\Restriction $this->restrictionMock */
+        $this->restrictionResultMock->method('getMessage')
+            ->will($this->returnValue(''));
+
+        /** @var \Rcm\SwitchUser\Restriction\Restriction $this ->restrictionMock */
         $this->restrictionMock = $this->getMockBuilder(
             'Rcm\SwitchUser\Restriction\Restriction'
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->restrictionMock->method('isAllowed')
-            ->will($this->returnValue(true));
-
-        $this->restrictionMock->method('getMessage')
-            ->will($this->returnValue(''));
+        $this->restrictionMock->method('allowed')
+            ->will($this->returnValue($this->restrictionResultMock));
 
         /** @var \Doctrine\ORM\EntityManager $entityMangerMock */
-        $this->entityMangerMock = $this->getMockBuilder('\Doctrine\ORM\EntityManager')
+        $this->entityMangerMock = $this->getMockBuilder(
+            '\Doctrine\ORM\EntityManager'
+        )
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -87,7 +102,251 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         return $unit;
     }
 
-   public function testGetSwitchBackMethod()
+    /**
+     * getUnitBasicSwitchBack HAPPY PATH
+     *
+     * @return SwitchUserService
+     */
+    public function getUnitBasicSwitchBack()
+    {
+        $config = $this->configMock;
+
+        $config['Rcm\\SwitchUser']['switchBackMethod'] = 'basic';
+
+        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        $this->rcmUserMock
+            = $this->getMockBuilder('RcmUser\User\Entity\User')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUSerAuthenticationServiceMock = $this->getMockBuilder(
+            'RcmUser\Authentication\Service\UserAuthenticationService'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUSerAuthenticationServiceMock->method('setIdentity')
+            ->will($this->returnValue(null));
+
+        /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
+        $this->rcmUserServiceMock = $this->getMockBuilder(
+            'RcmUser\Service\RcmUserService'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUserServiceMock->method('getCurrentUser')
+            ->will($this->returnValue($this->rcmUserMock));
+
+        $this->rcmUserServiceMock->method('getUserByUsername')
+            ->will($this->returnValue($this->rcmUserMock));
+
+        $this->rcmUserServiceMock->method('getUserAuthService')
+            ->will($this->returnValue($this->rcmUSerAuthenticationServiceMock));
+
+        /** @var Result $this ->restrictionResultMock */
+        $this->restrictionResultMock = $this->getMockBuilder(
+            'Rcm\SwitchUser\Restriction\Result'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->restrictionResultMock->method('isAllowed')
+            ->will($this->returnValue(true));
+
+        $this->restrictionResultMock->method('getMessage')
+            ->will($this->returnValue(''));
+
+        /** @var \Rcm\SwitchUser\Restriction\Restriction $this ->restrictionMock */
+        $this->restrictionMock = $this->getMockBuilder(
+            'Rcm\SwitchUser\Restriction\Restriction'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->restrictionMock->method('allowed')
+            ->will($this->returnValue($this->restrictionResultMock));
+
+        /** @var \Doctrine\ORM\EntityManager $entityMangerMock */
+        $this->entityMangerMock = $this->getMockBuilder(
+            '\Doctrine\ORM\EntityManager'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $unit = new SwitchUserService(
+            $this->configMock,
+            $this->rcmUserServiceMock,
+            $this->restrictionMock,
+            $this->entityMangerMock
+        );
+
+        return $unit;
+    }
+
+    /**
+     * getUnitNoCurrentUser
+     *
+     * @return SwitchUserService
+     */
+    public function getUnitNoCurrentUser()
+    {
+        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        $this->rcmUserMock
+            = $this->getMockBuilder('RcmUser\User\Entity\User')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUSerAuthenticationServiceMock = $this->getMockBuilder(
+            'RcmUser\Authentication\Service\UserAuthenticationService'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUSerAuthenticationServiceMock->method('setIdentity')
+            ->will($this->returnValue(null));
+
+        /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
+        $this->rcmUserServiceMock = $this->getMockBuilder(
+            'RcmUser\Service\RcmUserService'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUserServiceMock->method('getCurrentUser')
+            ->will($this->returnValue(null));
+
+        $this->rcmUserServiceMock->method('getUserByUsername')
+            ->will($this->returnValue($this->rcmUserMock));
+
+        $this->rcmUserServiceMock->method('getUserAuthService')
+            ->will($this->returnValue($this->rcmUSerAuthenticationServiceMock));
+
+        /** @var Result $this ->restrictionResultMock */
+        $this->restrictionResultMock = $this->getMockBuilder(
+            'Rcm\SwitchUser\Restriction\Result'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->restrictionResultMock->method('isAllowed')
+            ->will($this->returnValue(true));
+
+        $this->restrictionResultMock->method('getMessage')
+            ->will($this->returnValue(''));
+
+        /** @var \Rcm\SwitchUser\Restriction\Restriction $this ->restrictionMock */
+        $this->restrictionMock = $this->getMockBuilder(
+            'Rcm\SwitchUser\Restriction\Restriction'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->restrictionMock->method('allowed')
+            ->will($this->returnValue($this->restrictionResultMock));
+
+        /** @var \Doctrine\ORM\EntityManager $entityMangerMock */
+        $this->entityMangerMock = $this->getMockBuilder(
+            '\Doctrine\ORM\EntityManager'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $unit = new SwitchUserService(
+            $this->configMock,
+            $this->rcmUserServiceMock,
+            $this->restrictionMock,
+            $this->entityMangerMock
+        );
+
+        return $unit;
+    }
+
+    /**
+     * getUnitResticted
+     *
+     * @return SwitchUserService
+     */
+    public function getUnitResticted()
+    {
+
+        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        $this->rcmUserMock
+            = $this->getMockBuilder('RcmUser\User\Entity\User')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUSerAuthenticationServiceMock = $this->getMockBuilder(
+            'RcmUser\Authentication\Service\UserAuthenticationService'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUSerAuthenticationServiceMock->method('setIdentity')
+            ->will($this->returnValue(null));
+
+        /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
+        $this->rcmUserServiceMock = $this->getMockBuilder(
+            'RcmUser\Service\RcmUserService'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->rcmUserServiceMock->method('getCurrentUser')
+            ->will($this->returnValue($this->rcmUserMock));
+
+        $this->rcmUserServiceMock->method('getUserByUsername')
+            ->will($this->returnValue($this->rcmUserMock));
+
+        $this->rcmUserServiceMock->method('getUserAuthService')
+            ->will($this->returnValue($this->rcmUSerAuthenticationServiceMock));
+
+        /** @var Result $this ->restrictionResultMock */
+        $this->restrictionResultMock = $this->getMockBuilder(
+            'Rcm\SwitchUser\Restriction\Result'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->restrictionResultMock->method('isAllowed')
+            ->will($this->returnValue(false));
+
+        $this->restrictionResultMock->method('getMessage')
+            ->will($this->returnValue('RESTRICTED'));
+
+        /** @var \Rcm\SwitchUser\Restriction\Restriction $this ->restrictionMock */
+        $this->restrictionMock = $this->getMockBuilder(
+            'Rcm\SwitchUser\Restriction\Restriction'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->restrictionMock->method('allowed')
+            ->will($this->returnValue($this->restrictionResultMock));
+
+        /** @var \Doctrine\ORM\EntityManager $entityMangerMock */
+        $this->entityMangerMock = $this->getMockBuilder(
+            '\Doctrine\ORM\EntityManager'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $unit = new SwitchUserService(
+            $this->configMock,
+            $this->rcmUserServiceMock,
+            $this->restrictionMock,
+            $this->entityMangerMock
+        );
+
+        return $unit;
+    }
+
+    /**
+     * testGetSwitchBackMethod
+     *
+     * @return void
+     */
+    public function testGetSwitchBackMethod()
     {
         $unit = $this->getUnit();
 
@@ -96,6 +355,11 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('auth', $result);
     }
 
+    /**
+     * testGetUser
+     *
+     * @return void
+     */
     public function testGetUser()
     {
         $unit = $this->getUnit();
@@ -105,7 +369,12 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\RcmUser\User\Entity\User', $result);
     }
 
-    public function switchToUser()
+    /**
+     * testSwitchToUser
+     *
+     * @return void
+     */
+    public function testSwitchToUser()
     {
         /* HAPPY PATH */
         $unit = $this->getUnit();
@@ -118,24 +387,53 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result->isSuccess());
 
         /* NO USER */
-        $unit = $this->getUnit();
-        $this->rcmUserServiceMock->method('getCurrentUser')
-            ->will($this->returnValue(null));
+        $unit = $this->getUnitNoCurrentUser();
 
-        $result = $unit->switchToUser($nulletUser);
+        $result = $unit->switchToUser($targetUser);
 
         $this->assertInstanceOf('\Rcm\SwitchUser\Result', $result);
-        $this->assertTrue($result->isSuccess());
+        $this->assertFalse($result->isSuccess());
 
         /* RESTRICTION */
-        $unit = $this->getUnit();
-        $this->rcmUserServiceMock->method('getCurrentUser')
-            ->will($this->returnValue(null));
+        $unit = $this->getUnitResticted();
 
-        $result = $unit->switchToUser($nulletUser);
+        $result = $unit->switchToUser($targetUser);
+
+        $this->assertInstanceOf('\Rcm\SwitchUser\Result', $result);
+        $this->assertFalse($result->isSuccess());
+    }
+
+    /**
+     * testSwitchToUser
+     *
+     * @return void
+     */
+    public function testSwitchBack()
+    {
+        /* HAPPY PATH */
+        $unit = $this->getUnit();
+
+        $targetUser = new User('123');
+
+        $result = $unit->switchToUser($targetUser);
 
         $this->assertInstanceOf('\Rcm\SwitchUser\Result', $result);
         $this->assertTrue($result->isSuccess());
 
+        /* NO USER */
+        $unit = $this->getUnitNoCurrentUser();
+
+        $result = $unit->switchToUser($targetUser);
+
+        $this->assertInstanceOf('\Rcm\SwitchUser\Result', $result);
+        $this->assertFalse($result->isSuccess());
+
+        /* RESTRICTION */
+        $unit = $this->getUnitResticted();
+
+        $result = $unit->switchToUser($targetUser);
+
+        $this->assertInstanceOf('\Rcm\SwitchUser\Result', $result);
+        $this->assertFalse($result->isSuccess());
     }
 }
