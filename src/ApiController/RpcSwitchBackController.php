@@ -44,7 +44,7 @@ class RpcSwitchBackController extends BaseApiController
         );
 
         try {
-            $result = $service->switchBack($suUserPassword);
+            $result = $service->switchBack(['suUserPassword' => $suUserPassword]);
         } catch (\Exception $exception) {
             return $this->getApiResponse(
                 null,
