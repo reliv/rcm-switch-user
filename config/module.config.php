@@ -63,7 +63,15 @@ return [
          * 'basic' = no auth required
          * 'auth'  = password auth required to switch back to admin
          */
-        'switchBackMethod' => 'auth',
+        'switcherMethod' => 'auth',
+        /**
+         * register switchers
+         * ['{switcherMethod}' => '{ServiceName}']
+         */
+        'switcherServices' => [
+            'basic' => 'Rcm\SwitchUser\Switcher\BasicSwitcher',
+            'auth' => 'Rcm\SwitchUser\Switcher\AuthSwitcher',
+        ]
     ],
     /* Plugin Config */
     'rcmPlugin' => [
@@ -147,11 +155,31 @@ return [
                     'config',
                     'RcmUser\Service\RcmUserService',
                     'Rcm\SwitchUser\Restriction',
+                    'Rcm\SwitchUser\Switcher',
+                    'Rcm\SwitchUser\Service\SwitchUserLogService',
+                ]
+            ],
+            'Rcm\SwitchUser\Service\SwitchUserLogService' =>  [
+                'arguments' => [
                     'Doctrine\ORM\EntityManager',
+                ]
+            ],
+            /* Switchers */
+            'Rcm\SwitchUser\Switcher\BasicSwitcher' => [
+                'arguments' => [
+                    'RcmUser\Service\RcmUserService',
+                    'Rcm\SwitchUser\Service\SwitchUserLogService',
+                ]
+            ],
+            'Rcm\SwitchUser\Switcher\AuthSwitcher' => [
+                'arguments' => [
+                    'RcmUser\Service\RcmUserService',
+                    'Rcm\SwitchUser\Service\SwitchUserLogService',
                 ]
             ],
         ],
         'factories' => [
+            'Rcm\SwitchUser\Switcher' => 'Rcm\SwitchUser\Factory\SwitcherServiceFactory',
             'Rcm\SwitchUser\Restriction' => 'Rcm\SwitchUser\Factory\CompositeRestrictionFactory'
         ],
     ],

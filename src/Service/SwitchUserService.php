@@ -2,11 +2,10 @@
 
 namespace Rcm\SwitchUser\Service;
 
-use Doctrine\ORM\EntityManager;
-use Rcm\SwitchUser\Entity\LogEntry;
 use Rcm\SwitchUser\Model\SuProperty;
 use Rcm\SwitchUser\Restriction\Restriction;
 use Rcm\SwitchUser\Result;
+use Rcm\SwitchUser\Switcher\Switcher;
 use RcmUser\Service\RcmUserService;
 use RcmUser\User\Entity\User;
 
@@ -36,37 +35,39 @@ class SwitchUserService
     protected $restriction;
 
     /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
-    /**
-     * @var string
-     */
-    protected $switchBackMethod = 'auth';
-
-    /**
      * @var array
      */
     protected $aclConfig;
 
     /**
-     * @param array          $config
-     * @param RcmUserService $rcmUserService
-     * @param Restriction    $restriction
-     * @param EntityManager  $entityManager
+     * @var Switcher
+     */
+    protected $switcher;
+
+    /**
+     * @var SwitchUserLogService
+     */
+    protected $switchUserLogService;
+
+    /**
+     * @param array                $config
+     * @param RcmUserService       $rcmUserService
+     * @param Restriction          $restriction
+     * @param Switcher             $switcher
+     * @param SwitchUserLogService $switchUserLogService
      */
     public function __construct(
         $config,
         RcmUserService $rcmUserService,
         Restriction $restriction,
-        EntityManager $entityManager
+        Switcher $switcher,
+        SwitchUserLogService $switchUserLogService
     ) {
         $this->rcmUserService = $rcmUserService;
         $this->restriction = $restriction;
-        $this->entityManager = $entityManager;
-        $this->switchBackMethod = $config['Rcm\\SwitchUser']['switchBackMethod'];
         $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
+        $this->switcher = $switcher;
+        $this->switchUserLogService = $switchUserLogService;
     }
 
     /**
@@ -76,7 +77,7 @@ class SwitchUserService
      */
     public function getSwitchBackMethod()
     {
-        return $this->switchBackMethod;
+        return $this->switcher->getName();
     }
 
     /**
@@ -94,12 +95,12 @@ class SwitchUserService
     /**
      * switchToUser
      *
-     * @param User $targetUser
+     * @param User  $targetUser
+     * @param array $options
      *
      * @return Result
-     * @throws \RcmUser\Exception\RcmUserException
      */
-    public function switchToUser(User $targetUser)
+    public function switchToUser(User $targetUser, $options = [])
     {
         // Get current user
         $currentUser = $this->rcmUserService->getCurrentUser();
@@ -137,166 +138,38 @@ class SwitchUserService
             return $result;
         }
 
-        // Force login as $targetUser
-        $this->rcmUserService->getUserAuthService()->setIdentity($targetUser);
-        // add SU property to target user
-        $targetUser->setProperty(
-            SuProperty::SU_PROPERTY,
-            new SuProperty($currentUser)
-        );
-
-        // log action
-        $this->logAction(
-            $currentUser->getId(),
-            $targetUser->getId(),
-            'SU was successful',
-            true
-        );
-
-        $result->setSuccess(true, 'SU was successful');
-
-        return $result;
+        return $this->switcher->switchTo($targetUser, $options);
     }
 
     /**
      * switchBack
      *
-     * @param null $suUserPassword
+     * @param array ['suUserPassword' = null]
      *
      * @return Result
      */
-    public function switchBack($suUserPassword = null)
-    {
-        $method = 'switchBack' . ucfirst($this->getSwitchBackMethod());
-
-        return $this->$method($suUserPassword);
-    }
-
-    /**
-     * switchBack Less secure way to switch user back
-     *
-     * @return Result
-     */
-    public function switchBackBasic()
+    public function switchBack($options = [])
     {
         // Get current user
         $targetUser = $this->rcmUserService->getCurrentUser();
 
-        $suUser = $this->getImpersonatorUser($targetUser);
-
         $result = new Result();
 
-        if (empty($suUser)) {
+        if (empty($targetUser)) {
+            $result->setSuccess(false, 'Not logged in');
+
+            return $result;
+        }
+
+        $impersonatorUser = $this->getImpersonatorUser($targetUser);
+
+        if (empty($impersonatorUser)) {
             $result->setSuccess(false, 'Not in SU session');
 
             return $result;
         }
 
-        $suUserId = $suUser->getId();
-
-        // Force login as $suUser
-        $this->rcmUserService->getUserAuthService()->setIdentity($suUser);
-
-        // log action
-        $this->logAction(
-            $suUserId,
-            $targetUser->getId(),
-            'SU switched back',
-            true
-        );
-
-        $result->setSuccess(true, 'SU switch back was successful');
-
-        return $result;
-    }
-
-    /**
-     * switchBackAuth More secure way to switch user back
-     *
-     * @param string $suUserPassword
-     *
-     * @return Result
-     */
-    public function switchBackAuth($suUserPassword)
-    {
-        // Get current user
-        $targetUser = $this->rcmUserService->getCurrentUser();
-
-        $suUser = $this->getImpersonatorUser($targetUser);
-
-        $result = new Result();
-
-        if (empty($suUser)) {
-            $result->setSuccess(false, 'Not in SU session');
-
-            return $result;
-        }
-
-        $suUserId = $suUser->getId();
-
-        $suUser->setPassword($suUserPassword);
-        $authResult = $this->rcmUserService->authenticate($suUser);
-        if (!$authResult->isValid()) {
-            // ERROR
-            // log action
-            $this->logAction(
-                $suUserId,
-                $targetUser->getId(),
-                'SU attempted to switched back, provided incorrect credentials',
-                true
-            );
-
-            $result->setSuccess(false, $authResult->getMessages()[0]);
-
-            return $result;
-        }
-
-        // log action
-        $this->logAction(
-            $suUserId,
-            $targetUser->getId(),
-            'SU switched back',
-            true
-        );
-
-        $result->setSuccess(true, 'SU switch back was successful');
-
-        return $result;
-    }
-
-    /**
-     * currentUserIsSu
-     *
-     * @return string|null
-     */
-    public function currentUserIsSu()
-    {
-        // Get current user
-        $currentUser = $this->rcmUserService->getCurrentUser();
-
-        if (empty($currentUser)) {
-            return false;
-        }
-
-        return $this->userIsSu($currentUser);
-    }
-
-    /**
-     * userIsSu
-     *
-     * @param User $user
-     *
-     * @return string|null
-     */
-    public function userIsSu(User $user)
-    {
-        /** @var SuProperty $suProperty */
-        $suProperty = $user->getProperty(SuProperty::SU_PROPERTY);
-        if ($suProperty === null) {
-            return null;
-        }
-
-        return $suProperty->getUserId();
+        return $this->switcher->switchBack($impersonatorUser, $options);
     }
 
     /**
@@ -309,12 +182,18 @@ class SwitchUserService
      *
      * @return void
      */
-    public function logAction($adminUserId, $targetUserId, $action, $actionSuccess)
-    {
-        $entry = new LogEntry($adminUserId, $targetUserId, $action, $actionSuccess);
-
-        $this->entityManager->persist($entry);
-        $this->entityManager->flush($entry);
+    public function logAction(
+        $adminUserId,
+        $targetUserId,
+        $action,
+        $actionSuccess
+    ) {
+        $this->switchUserLogService->logAction(
+            $adminUserId,
+            $targetUserId,
+            $action,
+            $actionSuccess
+        );
     }
 
     /**
@@ -363,31 +242,10 @@ class SwitchUserService
     }
 
     /**
-     * @deprecated
-     * getSuUserFromCurrent Get the admin user from the current user if SUed
-     *
-     * @return null|User
-     */
-    public function getCurrentSuUser()
-    {
-        return $this->getCurrentImpersonatorUser();
-    }
-
-    /**
-     * @deprecated
-     * getSuUser Get the admin user from the user if SUed
-     *
-     * @param User $user
-     *
-     * @return mixed|null
-     */
-    public function getSuUser(User $user)
-    {
-        return $this->getImpersonatorUser($user);
-    }
-
-    /**
      * isAllowed
+     *
+     * this is only a basic access check,
+     * the restrictions should catch and log any access attempts
      *
      * @param $suUser
      *
