@@ -37,14 +37,11 @@ class RpcSwitchBackController extends BaseApiController
             return $this->getApiResponse(null, 401);
         }
 
-        $suUserPassword = (
-            isset($data['suUserPassword'])
-            ? $data ['suUserPassword']
-            : null
-        );
+        // The switch back method used will determine what the API requires
+        $options = $data;
 
         try {
-            $result = $service->switchBack(['suUserPassword' => $suUserPassword]);
+            $result = $service->switchBack($options);
         } catch (\Exception $exception) {
             return $this->getApiResponse(
                 null,
