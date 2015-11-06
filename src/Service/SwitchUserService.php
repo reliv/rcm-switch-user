@@ -2,8 +2,6 @@
 
 namespace Rcm\SwitchUser\Service;
 
-use Doctrine\ORM\EntityManager;
-use Rcm\SwitchUser\Entity\LogEntry;
 use Rcm\SwitchUser\Model\SuProperty;
 use Rcm\SwitchUser\Restriction\Restriction;
 use Rcm\SwitchUser\Result;
@@ -155,9 +153,15 @@ class SwitchUserService
         // Get current user
         $targetUser = $this->rcmUserService->getCurrentUser();
 
-        $impersonatorUser = $this->getImpersonatorUser($targetUser);
-
         $result = new Result();
+
+        if (empty($targetUser)) {
+            $result->setSuccess(false, 'Not logged in');
+
+            return $result;
+        }
+
+        $impersonatorUser = $this->getImpersonatorUser($targetUser);
 
         if (empty($impersonatorUser)) {
             $result->setSuccess(false, 'Not in SU session');
