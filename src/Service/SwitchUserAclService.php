@@ -20,6 +20,10 @@ use RcmUser\Service\RcmUserService;
 class SwitchUserAclService
 {
     /**
+     * @var array
+     */
+    protected $aclConfig;
+    /**
      * @var RcmUserService
      */
     protected $rcmUserService;
@@ -41,9 +45,32 @@ class SwitchUserAclService
         RcmUserService $rcmUserService,
         SwitchUserService $switchUserService
     ) {
+        $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
         $this->rcmUserService = $rcmUserService;
         $this->switchUserService = $switchUserService;
-        $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
+    }
+
+    /**
+     * getAclUser
+     *
+     * @param $user
+     *
+     * @return mixed|null
+     */
+    public function getAclUser($user) {
+
+        if(empty($user)) {
+            return null;
+        }
+
+        $adminUser = $this->switchUserService->getImpersonatorUser($user);
+        $targetUser = $user;
+
+        if (empty($adminUser)) {
+            $adminUser = $targetUser;
+        }
+
+        return $adminUser;
     }
 
     /**
@@ -58,7 +85,7 @@ class SwitchUserAclService
      */
     public function isUserAllowed($resourceId, $privilege, $providerId, $user)
     {
-        $suUser = $this->switchUserService->getImpersonatorUser($user);
+        $suUser = $this->getAclUser($user);
 
         if (empty($suUser)) {
             return false;
@@ -83,12 +110,9 @@ class SwitchUserAclService
      */
     public function currentUserIsAllowed($resourceId, $privilege, $providerId)
     {
-        $adminUser = $this->switchUserService->getCurrentImpersonatorUser();
-        $targetUser = $this->rcmUserService->getCurrentUser();
+        $user = $this->rcmUserService->getCurrentUser();
 
-        if (empty($adminUser)) {
-            $adminUser = $targetUser;
-        }
+        $adminUser = $this->getAclUser($user);
 
         return $this->isUserAllowed(
             $resourceId,
