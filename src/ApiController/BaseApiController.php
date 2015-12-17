@@ -46,12 +46,26 @@ class BaseApiController extends AbstractRestfulJsonController
     }
 
     /**
+     * getSwitchUserAclService
+     *
+     * @return \Rcm\SwitchUser\Service\SwitchUserAclService
+     */
+    protected function getSwitchUserAclService()
+    {
+        return $this->getServiceLocator()->get(
+            'Rcm\SwitchUser\Service\SwitchUserAclService'
+        );
+    }
+
+    /**
      * isAllowed
      *
-     * @return bool
+     * @param $suUser
+     *
+     * @return bool|mixed
      */
     protected function isAllowed($suUser)
     {
-        return $this->getSwitchUserService()->isAllowed($suUser);
+        return $this->getSwitchUserAclService()->isSuAllowed($suUser);
     }
 }

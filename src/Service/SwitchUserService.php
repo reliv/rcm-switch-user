@@ -242,6 +242,7 @@ class SwitchUserService
     }
 
     /**
+     * @deprecated use SwitchUserAclService::isSuAllowed
      * isAllowed
      *
      * this is only a basic access check,
@@ -267,6 +268,7 @@ class SwitchUserService
     }
 
     /**
+     * @deprecated use SwitchUserAclService::currentUserIsSuAllowed
      * currentUserIsAllowed
      *
      * @return bool|mixed

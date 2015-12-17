@@ -45,6 +45,18 @@ class AdminController extends AbstractActionController
     }
 
     /**
+     * getSwitchUserAclService
+     *
+     * @return \Rcm\SwitchUser\Service\SwitchUserAclService
+     */
+    protected function getSwitchUserAclService()
+    {
+        return $this->getServiceLocator()->get(
+            'Rcm\SwitchUser\Service\SwitchUserAclService'
+        );
+    }
+
+    /**
      * isAllowed
      *
      * @param $suUser
@@ -53,7 +65,7 @@ class AdminController extends AbstractActionController
      */
     protected function isAllowed($suUser)
     {
-        return $this->getSwitchUserService()->isAllowed($suUser);
+        return $this->getSwitchUserAclService()->isSuAllowed($suUser);
     }
 
     /**

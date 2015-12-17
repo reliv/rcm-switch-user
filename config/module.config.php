@@ -150,6 +150,19 @@ return [
                     'RcmUser\Service\RcmUserService',
                 ]
             ],
+            /* Services */
+            'Rcm\SwitchUser\Service\SwitchUserAclService' => [
+                'arguments' => [
+                    'config',
+                    'RcmUser\Service\RcmUserService',
+                    'Rcm\SwitchUser\Service\SwitchUserService',
+                ]
+            ],
+            'Rcm\SwitchUser\Service\SwitchUserLogService' =>  [
+                'arguments' => [
+                    'Doctrine\ORM\EntityManager',
+                ]
+            ],
             'Rcm\SwitchUser\Service\SwitchUserService' => [
                 'arguments' => [
                     'config',
@@ -157,11 +170,6 @@ return [
                     'Rcm\SwitchUser\Restriction',
                     'Rcm\SwitchUser\Switcher',
                     'Rcm\SwitchUser\Service\SwitchUserLogService',
-                ]
-            ],
-            'Rcm\SwitchUser\Service\SwitchUserLogService' =>  [
-                'arguments' => [
-                    'Doctrine\ORM\EntityManager',
                 ]
             ],
             /* Switchers */
