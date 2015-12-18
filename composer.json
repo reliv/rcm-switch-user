@@ -22,11 +22,11 @@
     "zendframework/zendframework": "2.*",
     "doctrine/doctrine-orm-module": "0.*",
     "fxp/composer-asset-plugin": "~1.0",
-    "reliv/zf-config-factories": ">=2.0.0",
+    "reliv/zf-config-factories": "2.*",
     "rwoverdijk/assetmanager": "1.*",
-    "rcm/core": ">=0.3.2",
-    "rcm/api-lib": ">=0.3.0",
-    "rcm/user": ">=0.3.0",
+    "rcm/core": "0.*",
+    "rcm/api-lib": ">=0.*",
+    "rcm/user": ">=0.*",
     "bower-asset/rcm-loading": "0.*"
   },
   "autoload": {
