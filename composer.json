@@ -26,7 +26,7 @@
     "rwoverdijk/assetmanager": "1.*",
     "rcm/core": "0.*",
     "rcm/api-lib": "0.*",
-    "rcm/user": "0.*",
+    "rcm/user": "1.*",
     "bower-asset/rcm-loading": "0.*"
   },
   "autoload": {
