@@ -22,7 +22,7 @@
     "zendframework/zendframework": "2.*",
     "doctrine/doctrine-orm-module": "0.*",
     "fxp/composer-asset-plugin": "~1.0",
-    "reliv/zf-config-factories": "2.*",
+    "reliv/zf-config-factories": "3.*",
     "rwoverdijk/assetmanager": "1.*",
     "rcm/core": "1.*",
     "rcm/api-lib": "0.*",
