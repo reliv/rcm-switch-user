@@ -57,9 +57,10 @@ class SwitchUserAclService
      *
      * @return mixed|null
      */
-    public function getAclUser($user) {
+    public function getAclUser($user)
+    {
 
-        if(empty($user)) {
+        if (empty($user)) {
             return null;
         }
 
@@ -119,6 +120,60 @@ class SwitchUserAclService
             $privilege,
             $providerId,
             $adminUser
+        );
+    }
+
+    /**
+     * isImpersonatorUserAllowed
+     *
+     * @param $resourceId
+     * @param $privilege
+     * @param $providerId
+     * @param $user
+     *
+     * @return bool|mixed
+     */
+    public function isImpersonatorUserAllowed(
+        $resourceId,
+        $privilege,
+        $providerId,
+        $user
+    ) {
+        $user = $this->switchUserService->getImpersonatorUser($user);
+
+        if (empty($user)) {
+            return false;
+        }
+
+        return $this->rcmUserService->isUserAllowed(
+            $resourceId,
+            $privilege,
+            $providerId,
+            $user
+        );
+    }
+
+    /**
+     * isCurrentImpersonatorUserAllowed
+     *
+     * @param $resourceId
+     * @param $privilege
+     * @param $providerId
+     *
+     * @return bool|mixed
+     */
+    public function isCurrentImpersonatorUserAllowed(
+        $resourceId,
+        $privilege,
+        $providerId
+    ) {
+        $user = $this->rcmUserService->getCurrentUser();
+
+        return $this->isImpersonatorUserAllowed(
+            $resourceId,
+            $privilege,
+            $providerId,
+            $user
         );
     }
 
