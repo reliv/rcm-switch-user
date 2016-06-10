@@ -141,15 +141,15 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
                         loadingInt
                     );
                 },
-                success: function (response) {
+                success: function (response, status) {
                     onSuChange(
                         response.data
                     );
-                    onSuccess(response);
+                    onSuccess(response, status);
                 },
-                error: function (response) {
+                error: function (response, status) {
                     onSuChange(response.data);
-                    onError(response);
+                    onError(response, status);
                 }
             }
         );
@@ -178,13 +178,13 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
                         loadingInt
                     );
                 },
-                success: function (response) {
+                success: function (response, status) {
                     onSuChange();
-                    onSuccess(response);
+                    onSuccess(response, status);
                 },
-                error: function (response) {
+                error: function (response, status) {
                     onSuChange();
-                    onError(response);
+                    onError(response, status);
                 }
             }
         );
