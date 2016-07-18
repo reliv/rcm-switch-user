@@ -7,11 +7,9 @@ angular.module('rcmSwitchUser').directive(
         '$sce',
         'rcmSwitchUserService',
         'rcmEventManager',
-        function (
-            $sce,
-            rcmSwitchUserService,
-            rcmEventManager
-        ) {
+        function ($sce,
+                  rcmSwitchUserService,
+                  rcmEventManager) {
 
             /**
              *
@@ -33,7 +31,6 @@ angular.module('rcmSwitchUser').directive(
                         $scope.isSu = data.isSu;
                         $scope.impersonatedUser = data.impersonatedUser;
                         $scope.loading = false;
-                        //$scope.$apply();
                     }
                 );
             }
@@ -41,7 +38,11 @@ angular.module('rcmSwitchUser').directive(
             return {
                 link: link,
                 scope: {},
-                templateUrl: '/modules/switch-user/switch-user-message.html'
+                template: '<div class="rcm-switch-user-inject" ng-if="isSu">' +
+                '<div class="alert alert-caution" role="alert"> ' +
+                '<div rcm-switch-user-admin></div> ' +
+                '</div> ' +
+                '</div>'
             }
         }
     ]
