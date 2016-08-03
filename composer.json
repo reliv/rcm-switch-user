@@ -24,7 +24,8 @@
     "fxp/composer-asset-plugin": "~1.0",
     "reliv/zf-config-factories": "3.*",
     "rwoverdijk/assetmanager": "1.*",
-    "rcm/core": "1.*",
+    "rcm/core": "^1.7.0",
+    "rcm/core-js": "^1.0.0",
     "rcm/api-lib": "0.*",
     "rcm/user": "1.*",
     "bower-asset/rcm-loading": "0.*"
