@@ -21,7 +21,7 @@
     "php": ">=5.5",
     "zendframework/zendframework": "2.*",
     "doctrine/doctrine-orm-module": "0.*",
-    "fxp/composer-asset-plugin": "~1.0",
+    "fxp/composer-asset-plugin": "^1.2.0",
     "reliv/zf-config-factories": "3.*",
     "rwoverdijk/assetmanager": "1.*",
     "rcm/core": "^1.7.0",
@@ -33,6 +33,12 @@
   "autoload": {
     "psr-4": {
       "Rcm\\SwitchUser\\": "src/"
+    }
+  },
+  "extra": {
+    "asset-pattern-skip-version": "(-patch*)",
+    "asset-vcs-driver-options": {
+      "github-no-api": true
     }
   }
 }
