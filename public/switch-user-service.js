@@ -87,34 +87,35 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
             'rcmSwitchUserService.suChange',
             data
         );
-
-        setSessionCachedSuData(data);
     };
 
     /**
+     * The suMayBeActive flag causes the SU system to only ask the server about SU info
+     * if an SU has happened in this browser session.
      * Gets the cached data from the browser's "session" local storage.
      * This storage clears if the browser is closed.
      *
      * @returns {*}
      */
-    function getSessionCachedSuData() {
-        var data = null;
-        if (typeof(sessionStorage) !== "undefined" && sessionStorage.rcmSwitchUserCachedSu) {
-            data = JSON.parse(sessionStorage.rcmSwitchUserCachedSu);
+    function getSuMayBeActive() {
+        var mayBeActive = false;
+        if (typeof(sessionStorage) !== "undefined" && sessionStorage.rcmSwitchUser_suMayBeActive) {
+            mayBeActive = JSON.parse(sessionStorage.rcmSwitchUser_suMayBeActive);
         }
-        console.log(data);
-        return data;
+        return mayBeActive;
     }
 
     /**
+     * The suMayBeActive flag causes the SU system to only ask the server about SU info
+     * if an SU has happened in this browser session.
      * Sets the cached data in the browser's "session" local storage
      * This storage clears if the browser is closed.
      *
      * @param data
      */
-    function setSessionCachedSuData(data) {
+    function setSuMayBeActive(data) {
         if (typeof(sessionStorage) !== "undefined") {
-            sessionStorage.rcmSwitchUserCachedSu = JSON.stringify(data);
+            sessionStorage.rcmSwitchUser_suMayBeActive = JSON.stringify(data);
         }
     }
 
@@ -124,14 +125,6 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
      * @param onError
      */
     self.getSu = function (onSuccess, onError) {
-
-        var cachedSu = getSessionCachedSuData();
-
-        if (cachedSu) {
-            onSuChange(cachedSu);
-            onSuccess({data: cachedSu});
-            return;
-        }
 
         rcmApiLibService.get(
             {
@@ -162,6 +155,8 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
      * @param onError
      */
     self.switchUser = function (switchToUsername, onSuccess, onError) {
+
+        setSuMayBeActive(true);
 
         var data = {
             switchToUsername: switchToUsername
@@ -231,6 +226,10 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
      * init
      */
     var init = function () {
+        if (!getSuMayBeActive()) {
+            return;
+        }
+
         self.getSu(
             function () {
             },
