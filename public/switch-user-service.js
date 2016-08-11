@@ -87,7 +87,36 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
             'rcmSwitchUserService.suChange',
             data
         );
+
+        setSessionCachedSuData(data);
     };
+
+    /**
+     * Gets the cached data from the browser's "session" local storage.
+     * This storage clears if the browser is closed.
+     *
+     * @returns {*}
+     */
+    function getSessionCachedSuData() {
+        var data = null;
+        if (typeof(sessionStorage) !== "undefined" && sessionStorage.rcmSwitchUserCachedSu) {
+            data = JSON.parse(sessionStorage.rcmSwitchUserCachedSu);
+        }
+        console.log(data);
+        return data;
+    }
+
+    /**
+     * Sets the cached data in the browser's "session" local storage
+     * This storage clears if the browser is closed.
+     *
+     * @param data
+     */
+    function setSessionCachedSuData(data) {
+        if (typeof(sessionStorage) !== "undefined") {
+            sessionStorage.rcmSwitchUserCachedSu = JSON.stringify(data);
+        }
+    }
 
     /**
      * getSu
@@ -95,6 +124,14 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
      * @param onError
      */
     self.getSu = function (onSuccess, onError) {
+
+        var cachedSu = getSessionCachedSuData();
+
+        if (cachedSu) {
+            onSuChange(cachedSu);
+            onSuccess({data: cachedSu});
+            return;
+        }
 
         rcmApiLibService.get(
             {
@@ -215,12 +252,10 @@ angular.module('rcmSwitchUser').service(
         'rcmLoading',
         'rcmApiLibService',
         'rcmEventManager',
-        function (
-            $http,
-            rcmLoading,
-            rcmApiLibService,
-            rcmEventManager
-        ) {
+        function ($http,
+                  rcmLoading,
+                  rcmApiLibService,
+                  rcmEventManager) {
             return new RcmSwitchUserService(
                 $http,
                 rcmLoading,
