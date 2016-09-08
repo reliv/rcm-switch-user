@@ -1,22 +1,20 @@
 <?php
 return [
+    /* Inject script onto RCM pages */
+    'Rcm' => [
+        'HtmlIncludes' => [
+            'scripts' => [
+                'modules' => [
+                    'modules/switch-user/dist/switch-user.js' => []
+                ],
+            ]
+        ]
+    ],
     /* ASSET MANAGER */
     'asset_manager' => [
         'resolver_configs' => [
             'aliases' => [
                 'modules/switch-user/' => __DIR__ . '/../public/',
-            ],
-            'collections' => [
-                'modules/switch-user/switch-user.js' => [
-                    'modules/switch-user/switch-user-module.js',
-                    'modules/switch-user/switch-user-service.js',
-                    'modules/switch-user/switch-user-message-inject.js',
-                    'modules/switch-user/switch-user-message.js',
-                    'modules/switch-user/switch-user-admin.js',
-                ],
-                'modules/rcm/modules.js' => [
-                    'modules/switch-user/switch-user.js',
-                ]
             ],
         ],
     ],
@@ -158,7 +156,7 @@ return [
                     'Rcm\SwitchUser\Service\SwitchUserService',
                 ]
             ],
-            'Rcm\SwitchUser\Service\SwitchUserLogService' =>  [
+            'Rcm\SwitchUser\Service\SwitchUserLogService' => [
                 'arguments' => [
                     'Doctrine\ORM\EntityManager',
                 ]
