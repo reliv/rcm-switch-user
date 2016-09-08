@@ -1,38 +1,3 @@
-var exec = require('sync-exec');
-
-if (require('os').platform() != 'linux') {
-    console.warn('You must run grunt on vagrant. Running on MacOS causes DB errors right now.');
-}
-
-/**
- * Synchronously run a CLI command that returns JSON and return the result.
- */
-function executeAndGetJson(command) {
-    var result = exec(command);
-    if (result['stderr']) {
-        console.error(result['stderr']);
-    }
-    return JSON.parse(result['stdout']);
-}
-
-/**
- * Get the list of source scripts from the PHP app
- */
-function getSourceScripts() {
-    return executeAndGetJson(
-        'ENV=local php public/index.php list-html-includes-scripts'
-    );
-}
-
-/**
- * Get the list of source stylesheets from the PHP app
- */
-function getSourceStyleSheets() {
-    return executeAndGetJson(
-        'ENV=local php public/index.php list-html-includes-stylesheets'
-    );
-}
-
 module.exports = function (grunt) {
 
     grunt.initConfig(
@@ -43,11 +8,11 @@ module.exports = function (grunt) {
                         {
                             dest: 'dist/switch-user.js',
                             src: [
-                                'modules/switch-user/switch-user-module.js',
-                                'modules/switch-user/switch-user-service.js',
-                                'modules/switch-user/switch-user-message-inject.js',
-                                'modules/switch-user/switch-user-message.js',
-                                'modules/switch-user/switch-user-admin.js'
+                                'switch-user-module.js',
+                                'switch-user-service.js',
+                                'switch-user-message-inject.js',
+                                'switch-user-message.js',
+                                'switch-user-admin.js'
                             ]
                         }
                     ]
