@@ -8,3 +8,5 @@
 build
 composer.lock
 nbproject
+node_modules
+public/node_modules
