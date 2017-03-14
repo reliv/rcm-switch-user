@@ -74,7 +74,7 @@ class RpcSuController extends BaseApiController
             return $this->getApiResponse(
                 $resultData,
                 400,
-                new ApiMessage('httpStatus', 'Switch user request is not valid', 'rpcSu', '400', true)
+                new ApiMessage('httpStatus', 'The requested user could not be found.', 'rpcSu', '400', true)
             );
         }
 
