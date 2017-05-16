@@ -34,13 +34,13 @@ angular.module('rcmSwitchUser').directive(
                     propIsSu: '=isSu', // Bool
                     propImpersonatedUser: '=impersonatedUser', // {User}
                     propSwitchBackMethod: '=switchBackMethod', // string ('auth' or 'basic')
-                    propSwitchToUser: '=switchToUser', // string
+                    propSwitchToUserName: '=switchToUserName', // string
                     propSuUserPassword: '=suUserPassword', // string
                     propMessage: '=message', // {message},
                     propOnSwitchTo: '=onSwitchTo', // function
                     propOnSwitchBack: '=onSwitchBack', // function
                 },
-                template: '<style type="text/css">    .rcm-switch-user-admin button,    .rcm-switch-user-admin label,    .rcm-switch-user-admin p {        margin: 5px 0px 5px 0px;    }    .rcm-switch-user-inject .alert {        padding: 3px;    }    .rcm-switch-user-inject .alert-caution {        background-color: #FFFFAA;        border-color: #FFFF00;        color: #999900;    }</style><div class="rcm-switch-user-admin container-fluid" ng-hide="propLoading">    <div class="row form-inline">        <div class="col-md-12" ng-show="propMessage">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>        <div class="col-md-3" ng-show="propIsSu">            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>        </div>        <div class="col-md-4">            <form ng-submit="propOnSwitchTo()">                <input class="form-control input-sm"                       id="switchToUserName"                       placeholder="Username"                       ng-model="propSwitchToUser"                       type="text"/>                <button class="btn btn-default btn-sm"                        type="submit">Switch to User                </button>            </form>        </div>        <div class="col-md-4" ng-show="propIsSu">            <form ng-submit="propOnSwitchBack()">                <input class="form-control input-sm"                       id="suUserPassword"                       placeholder="password"                       ng-model="propSuUserPassword"                       ng-show="switchBackMethod == \'auth\'"                       type="password"/>                <button class="btn btn-primary btn-sm"                        type="submit">End Impersonation                </button>            </form>        </div>    </div></div>'
+                template: '<style type="text/css">    .switch-user-admin button,    .switch-user-admin label,    .switch-user-admin p {        margin: 5px 0px 5px 0px;    }    .switch-user-inject .alert {        padding: 3px;    }    .switch-user-inject .alert-caution {        background-color: #FFFFAA;        border-color: #FFFF00;        color: #999900;    }</style><div class="switch-user-admin container-fluid" ng-hide="propLoading">    <div class="row form-inline">        <div class="col-md-12" ng-show="propMessage">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>        <div class="col-md-3" ng-show="propIsSu">            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>        </div>        <div class="col-md-4">            <form ng-submit="propOnSwitchTo()">                <input class="form-control input-sm"                       id="switchToUserName"                       placeholder="Username"                       ng-model="propSwitchToUserName"                       type="text"/>                <button class="btn btn-default btn-sm"                        type="submit">Switch to User                </button>            </form>        </div>        <div class="col-md-4" ng-show="propIsSu">            <form ng-submit="propOnSwitchBack()">                <input class="form-control input-sm"                       id="suUserPassword"                       placeholder="password"                       ng-model="propSuUserPassword"                       ng-show="switchBackMethod == \'auth\'"                       type="password"/>                <button class="btn btn-primary btn-sm"                        type="submit">End Impersonation                </button>            </form>        </div>    </div></div>'
             }
         }
     ]
@@ -356,61 +356,68 @@ angular.module('rcmSwitchUser').service(
 /**
  * Example usage - To inject the switch user, add this code to your application
  */
-// angular.module('rcmSwitchUser').run(
-//     [
-//         'rcmSwitchUserMessageInject',
-//         function (
-//             rcmSwitchUserMessageInject
-//         ) {
-//             rcmSwitchUserMessageInject.injectHeader();
-//         }
-//     ]
-// );
+angular.module('rcmSwitchUser').run(
+    [
+        'rcmSwitchUserMessageInject',
+        function (
+            rcmSwitchUserMessageInject
+        ) {
+            rcmSwitchUserMessageInject.injectHeader();
+        }
+    ]
+);
 
 /**
  * rcmSwitchUserMessage
  */
-angular.module('rcmSwitchUser').directive('rcmSwitchUserMessage', [
-    '$sce',
-    'rcmSwitchUserService',
-    'rcmEventManager',
-    function ($sce, rcmSwitchUserService, rcmEventManager) {
-        /**
-         * Link function
-         *
-         * @param $scope
-         * @param element
-         * @param attrs
-         */
-        function link($scope, element, attrs) {
+angular.module('rcmSwitchUser').directive(
+    'rcmSwitchUserMessage', [
+        '$sce',
+        'rcmSwitchUserService',
+        'rcmEventManager',
+        function (
+            $sce,
+            rcmSwitchUserService,
+            rcmEventManager
+        ) {
+            /**
+             * Link function
+             *
+             * @param $scope
+             * @param element
+             * @param attrs
+             */
+            function link($scope, element, attrs) {
 
-            $scope.loading = true;
+                $scope.loading = true;
 
-            $scope.isSu = false;
+                $scope.isSu = false;
 
-            $scope.impersonatedUser = null;
+                $scope.impersonatedUser = null;
 
-            rcmEventManager.on(
-                'rcmSwitchUserService.suChange',
-                function (data) {
-                    $scope.isSu = data.isSu;
-                    $scope.impersonatedUser = data.impersonatedUser;
-                    $scope.loading = false;
-                }
-            );
+                rcmEventManager.on(
+                    'rcmSwitchUserService.suChange',
+                    function (data) {
+                        $scope.isSu = data.isSu;
+                        $scope.impersonatedUser = data.impersonatedUser;
+                        $scope.loading = false;
+                    }
+                );
+            }
+
+            return {
+                link: link,
+                scope: {},
+                template: '' +
+                '<div class="rcm-switch-user-inject" ng-if="isSu">' +
+                ' <div class="alert alert-caution" role="alert"> ' +
+                '  <div rcm-switch-user-admin switch-to-user-name=""></div> ' +
+                ' </div> ' +
+                '</div>'
+            }
         }
-
-        return {
-            link: link,
-            scope: {},
-            template: '<div class="rcm-switch-user-inject" ng-if="isSu">' +
-            '<div class="alert alert-caution" role="alert"> ' +
-            '<div rcm-switch-user-admin></div> ' +
-            '</div> ' +
-            '</div>'
-        }
-    }
-]);
+    ]
+);
 
 /**
  * rcmSwitchUserAdmin
@@ -432,7 +439,6 @@ angular.module('rcmSwitchUser').directive(
             $window,
             rcmLoading
         ) {
-
             /**
              *
              * @param $scope
@@ -445,11 +451,10 @@ angular.module('rcmSwitchUser').directive(
                 $scope.isSu = false;
                 $scope.impersonatedUser = null;
                 $scope.switchBackMethod = 'auth';
-                $scope.switchToUser = null;
                 $scope.suUserPassword = null;
                 $scope.message = null;
 
-                var setLoading = function(isLoading) {
+                var setLoading = function (isLoading) {
                     $scope.loading = isLoading;
                     var loadingInt = Number(!isLoading);
                     rcmLoading.setLoading(
@@ -461,7 +466,7 @@ angular.module('rcmSwitchUser').directive(
                 /**
                  * apiInit
                  */
-                var apiInit = function() {
+                var apiInit = function () {
                     setLoading(true);
                     $scope.message = null;
                 };
@@ -470,12 +475,12 @@ angular.module('rcmSwitchUser').directive(
                  *handleMessages
                  * @param messages
                  */
-                var handleMessages = function(messages) {
+                var handleMessages = function (messages) {
                     $scope.message = null;
                     rcmApiLibMessageService.getPrimaryMessage(
                         messages,
-                        function(message) {
-                            if(message) {
+                        function (message) {
+                            if (message) {
                                 $scope.message = message;
                             }
                         }
@@ -530,10 +535,10 @@ angular.module('rcmSwitchUser').directive(
                 /**
                  * switchTo
                  */
-                var switchTo = function() {
+                var switchTo = function () {
                     apiInit();
                     rcmSwitchUserService.switchUser(
-                        $scope.switchToUser,
+                        $scope.propSwitchToUserName,
                         onSwitchToSuccess,
                         onSwitchToError
                     );
@@ -543,10 +548,10 @@ angular.module('rcmSwitchUser').directive(
                  * switchTo
                  */
                 $scope.switchTo = function () {
-                    if($scope.isSu) {
+                    if ($scope.isSu) {
                         apiInit();
                         rcmSwitchUserService.switchUserBack(
-                            $scope.switchToUser,
+                            $scope.propSwitchToUserName,
                             onSwitchBackAndToSuccess,
                             onSwitchBackError
                         );
@@ -584,14 +589,16 @@ angular.module('rcmSwitchUser').directive(
 
             return {
                 link: link,
-                scope: {},
+                scope: {
+                    propSwitchToUserName: '=switchToUserName'
+                },
                 template: '' +
                 '<rcm-switch-user-switch-to-user' +
                 ' loading="loading"' +
                 ' is-su="isSu"' +
                 ' impersonated-user="impersonatedUser"' +
                 ' switch-back-method="switchBackMethod"' +
-                ' switch-to-user="switchToUser"' +
+                ' switch-to-user-name="propSwitchToUserName"' +
                 ' su-user-password="suUserPassword"' +
                 ' message="message"' +
                 ' on-switch-to="switchTo"' +

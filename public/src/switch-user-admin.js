@@ -18,7 +18,6 @@ angular.module('rcmSwitchUser').directive(
             $window,
             rcmLoading
         ) {
-
             /**
              *
              * @param $scope
@@ -31,11 +30,10 @@ angular.module('rcmSwitchUser').directive(
                 $scope.isSu = false;
                 $scope.impersonatedUser = null;
                 $scope.switchBackMethod = 'auth';
-                $scope.switchToUser = null;
                 $scope.suUserPassword = null;
                 $scope.message = null;
 
-                var setLoading = function(isLoading) {
+                var setLoading = function (isLoading) {
                     $scope.loading = isLoading;
                     var loadingInt = Number(!isLoading);
                     rcmLoading.setLoading(
@@ -47,7 +45,7 @@ angular.module('rcmSwitchUser').directive(
                 /**
                  * apiInit
                  */
-                var apiInit = function() {
+                var apiInit = function () {
                     setLoading(true);
                     $scope.message = null;
                 };
@@ -56,12 +54,12 @@ angular.module('rcmSwitchUser').directive(
                  *handleMessages
                  * @param messages
                  */
-                var handleMessages = function(messages) {
+                var handleMessages = function (messages) {
                     $scope.message = null;
                     rcmApiLibMessageService.getPrimaryMessage(
                         messages,
-                        function(message) {
-                            if(message) {
+                        function (message) {
+                            if (message) {
                                 $scope.message = message;
                             }
                         }
@@ -116,10 +114,10 @@ angular.module('rcmSwitchUser').directive(
                 /**
                  * switchTo
                  */
-                var switchTo = function() {
+                var switchTo = function () {
                     apiInit();
                     rcmSwitchUserService.switchUser(
-                        $scope.switchToUser,
+                        $scope.propSwitchToUserName,
                         onSwitchToSuccess,
                         onSwitchToError
                     );
@@ -129,10 +127,10 @@ angular.module('rcmSwitchUser').directive(
                  * switchTo
                  */
                 $scope.switchTo = function () {
-                    if($scope.isSu) {
+                    if ($scope.isSu) {
                         apiInit();
                         rcmSwitchUserService.switchUserBack(
-                            $scope.switchToUser,
+                            $scope.propSwitchToUserName,
                             onSwitchBackAndToSuccess,
                             onSwitchBackError
                         );
@@ -170,14 +168,16 @@ angular.module('rcmSwitchUser').directive(
 
             return {
                 link: link,
-                scope: {},
+                scope: {
+                    propSwitchToUserName: '=switchToUserName'
+                },
                 template: '' +
                 '<rcm-switch-user-switch-to-user' +
                 ' loading="loading"' +
                 ' is-su="isSu"' +
                 ' impersonated-user="impersonatedUser"' +
                 ' switch-back-method="switchBackMethod"' +
-                ' switch-to-user="switchToUser"' +
+                ' switch-to-user-name="propSwitchToUserName"' +
                 ' su-user-password="suUserPassword"' +
                 ' message="message"' +
                 ' on-switch-to="switchTo"' +

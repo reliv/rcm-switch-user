@@ -1,21 +1,21 @@
 <style type="text/css">
-    .rcm-switch-user-admin button,
-    .rcm-switch-user-admin label,
-    .rcm-switch-user-admin p {
+    .switch-user-admin button,
+    .switch-user-admin label,
+    .switch-user-admin p {
         margin: 5px 0px 5px 0px;
     }
 
-    .rcm-switch-user-inject .alert {
+    .switch-user-inject .alert {
         padding: 3px;
     }
 
-    .rcm-switch-user-inject .alert-caution {
+    .switch-user-inject .alert-caution {
         background-color: #FFFFAA;
         border-color: #FFFF00;
         color: #999900;
     }
 </style>
-<div class="rcm-switch-user-admin container-fluid" ng-hide="propLoading">
+<div class="switch-user-admin container-fluid" ng-hide="propLoading">
     <div class="row form-inline">
         <div class="col-md-12" ng-show="propMessage">
             <div class="alert alert-warning" role="alert">
@@ -30,7 +30,7 @@
                 <input class="form-control input-sm"
                        id="switchToUserName"
                        placeholder="Username"
-                       ng-model="propSwitchToUser"
+                       ng-model="propSwitchToUserName"
                        type="text"/>
                 <button class="btn btn-default btn-sm"
                         type="submit">Switch to User

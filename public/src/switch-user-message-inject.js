@@ -41,13 +41,13 @@ angular.module('rcmSwitchUser').service(
 /**
  * Example usage - To inject the switch user, add this code to your application
  */
-// angular.module('rcmSwitchUser').run(
-//     [
-//         'rcmSwitchUserMessageInject',
-//         function (
-//             rcmSwitchUserMessageInject
-//         ) {
-//             rcmSwitchUserMessageInject.injectHeader();
-//         }
-//     ]
-// );
+angular.module('rcmSwitchUser').run(
+    [
+        'rcmSwitchUserMessageInject',
+        function (
+            rcmSwitchUserMessageInject
+        ) {
+            rcmSwitchUserMessageInject.injectHeader();
+        }
+    ]
+);

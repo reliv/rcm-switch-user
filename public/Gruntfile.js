@@ -1,12 +1,12 @@
 module.exports = function (grunt) {
 
     var files = [
-        'switch-user-module.js',
-        'switch-to-user-directive.js',
-        'switch-user-service.js',
-        'switch-user-message-inject.js',
-        'switch-user-message.js',
-        'switch-user-admin.js'
+        'src/switch-user-module.js',
+        'src/switch-to-user-directive.js',
+        'src/switch-user-service.js',
+        'src/switch-user-message-inject.js',
+        'src/switch-user-message.js',
+        'src/switch-user-admin.js'
     ];
 
     grunt.initConfig(
@@ -44,8 +44,9 @@ module.exports = function (grunt) {
                 src: {
                     files: [
                         'Gruntfile.js',
-                        '**/*.js',
-                        '**/*.css'
+                        'src/**/*.js',
+                        'src/**/*.css',
+                        'src/**/*.html'
                     ],
                     tasks: ['concat', 'inlineTemplate', 'uglify']
                 }
