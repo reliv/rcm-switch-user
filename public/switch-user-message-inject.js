@@ -2,32 +2,52 @@
  * RcmSwitchUserMessageInject dom loader
  * @param $compile
  */
-var rcmSwitchUserMessageInject = function (
+var RcmSwitchUserMessageInject = function (
     $compile
 ) {
-    var content = '<div rcm-switch-user-message></div>';
-    var element = jQuery(content);
-    element.prependTo('body');
+    var self = this;
 
-    var contents = element.contents();
-    var aemlement = angular.element(element);
-    var scope = aemlement.scope;
+    self.injectHeader = function () {
 
-    $compile(contents)(scope);
+        var content = '<div rcm-switch-user-message></div>';
+        var element = jQuery(content);
+        element.prependTo('body');
+
+        var contents = element.contents();
+        var aemlement = angular.element(element);
+        var scope = aemlement.scope;
+
+        $compile(contents)(scope);
+    }
 };
 
 /**
- * run
+ * rcmSwitchUserService
  */
-angular.module('rcmSwitchUser').run(
+angular.module('rcmSwitchUser').service(
+    'rcmSwitchUserMessageInject',
     [
         '$compile',
         function (
             $compile
         ) {
-            rcmSwitchUserMessageInject(
+            return new RcmSwitchUserMessageInject(
                 $compile
             );
         }
     ]
 );
+
+/**
+ * Example usage - To inject the switch user, add this code to your application
+ */
+// angular.module('rcmSwitchUser').run(
+//     [
+//         'rcmSwitchUserMessageInject',
+//         function (
+//             rcmSwitchUserMessageInject
+//         ) {
+//             rcmSwitchUserMessageInject.injectHeader();
+//         }
+//     ]
+// );

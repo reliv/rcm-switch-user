@@ -5,7 +5,7 @@ return [
         'HtmlIncludes' => [
             'scripts' => [
                 'modules' => [
-                    '/modules/switch-user/dist/switch-user.js' => []
+                    '/modules/switch-user/dist/switch-user.min.js' => []
                 ],
             ]
         ]

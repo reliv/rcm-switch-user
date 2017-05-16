@@ -171,7 +171,19 @@ angular.module('rcmSwitchUser').directive(
             return {
                 link: link,
                 scope: {},
-                templateUrl: '/modules/switch-user/switch-user-admin.html'
+                template: '' +
+                '<rcm-switch-user-switch-to-user' +
+                ' loading="loading"' +
+                ' is-su="isSu"' +
+                ' impersonated-user="impersonatedUser"' +
+                ' switch-back-method="switchBackMethod"' +
+                ' switch-to-user="switchToUser"' +
+                ' su-user-password="suUserPassword"' +
+                ' message="message"' +
+                ' on-switch-to="switchTo"' +
+                ' on-switch-back="switchBack"' +
+                '>' +
+                '</rcm-switch-user-switch-to-user>'
             }
         }
     ]

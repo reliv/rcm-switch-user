@@ -15,34 +15,34 @@
         color: #999900;
     }
 </style>
-<div class="rcm-switch-user-admin container-fluid" ng-hide="loading">
+<div class="rcm-switch-user-admin container-fluid" ng-hide="propLoading">
     <div class="row form-inline">
-        <div class="col-md-12" ng-show="message">
+        <div class="col-md-12" ng-show="propMessage">
             <div class="alert alert-warning" role="alert">
-                {{message.value}}
+                {{propMessage.value}}
             </div>
         </div>
-        <div class="col-md-3" ng-show="isSu">
-            <label>Impersonating: {{impersonatedUser.id}} {{impersonatedUser.username}}</label>
+        <div class="col-md-3" ng-show="propIsSu">
+            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>
         </div>
         <div class="col-md-4">
-            <form ng-submit="switchTo()">
+            <form ng-submit="propOnSwitchTo()">
                 <input class="form-control input-sm"
                        id="switchToUserName"
                        placeholder="Username"
-                       ng-model="switchToUser"
+                       ng-model="propSwitchToUser"
                        type="text"/>
                 <button class="btn btn-default btn-sm"
                         type="submit">Switch to User
                 </button>
             </form>
         </div>
-        <div class="col-md-4" ng-show="isSu">
-            <form ng-submit="switchBack()">
+        <div class="col-md-4" ng-show="propIsSu">
+            <form ng-submit="propOnSwitchBack()">
                 <input class="form-control input-sm"
                        id="suUserPassword"
                        placeholder="password"
-                       ng-model="suUserPassword"
+                       ng-model="propSuUserPassword"
                        ng-show="switchBackMethod == 'auth'"
                        type="password"/>
                 <button class="btn btn-primary btn-sm"
