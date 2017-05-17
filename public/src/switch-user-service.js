@@ -1,12 +1,11 @@
 /**
  * RcmSwitchUserService
- * @param $http
  * @param rcmLoading
  * @param rcmApiLibService
  * @param rcmEventManager
  * @constructor
  */
-var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEventManager) {
+var RcmSwitchUserService = function (rcmLoading, rcmApiLibService, rcmEventManager) {
 
     /**
      * self
@@ -247,16 +246,15 @@ var RcmSwitchUserService = function ($http, rcmLoading, rcmApiLibService, rcmEve
 angular.module('rcmSwitchUser').service(
     'rcmSwitchUserService',
     [
-        '$http',
         'rcmLoading',
         'rcmApiLibService',
         'rcmEventManager',
-        function ($http,
-                  rcmLoading,
-                  rcmApiLibService,
-                  rcmEventManager) {
+        function (
+            rcmLoading,
+            rcmApiLibService,
+            rcmEventManager
+        ) {
             return new RcmSwitchUserService(
-                $http,
                 rcmLoading,
                 rcmApiLibService,
                 rcmEventManager

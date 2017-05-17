@@ -5,7 +5,7 @@ return [
         'HtmlIncludes' => [
             'scripts' => [
                 'modules' => [
-                    '/modules/switch-user/dist/switch-user.js' => []
+                    '/modules/switch-user/dist/switch-user.min.js' => []
                 ],
             ]
         ]
@@ -78,7 +78,11 @@ return [
             'display' => 'Switch User',
             'tooltip' => 'Switch User Admin options',
             'icon' => '',
-            'defaultInstanceConfig' => [],
+            'defaultInstanceConfig' => [
+                'showSwitchToUserNameField' => true,
+                'switchToUserNameLabel' => 'Switch to User',
+                'switchBackLabel' => 'End Impersonation',
+            ],
             'canCache' => false
         ],
     ],
