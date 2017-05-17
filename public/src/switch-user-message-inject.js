@@ -11,27 +11,58 @@ var RcmSwitchUserMessageInject = function (
 ) {
     var self = this;
 
+    self.defaults = {
+        showSwitchToUserNameField: true,
+        switchToUserName: '',
+        switchToUserNameLabel: 'Switch to User',
+        switchBackLabel: 'End Impersonation'
+    };
+
+    /**
+     *
+     * @param {boolean} showSwitchToUserNameField
+     * @param {string} switchToUserName
+     * @param {string} switchToUserNameLabel
+     * @param {string} switchBackLabel
+     */
     self.injectHeader = function (
         showSwitchToUserNameField,
-        switchToUserName
+        switchToUserName,
+        switchToUserNameLabel,
+        switchBackLabel
     ) {
         // default true
         if (typeof showSwitchToUserNameField === 'undefined') {
-            showSwitchToUserNameField = true;
+            showSwitchToUserNameField = self.defaults.showSwitchToUserNameField;
         }
 
         // default null
         if (typeof switchToUserName === 'undefined') {
-            switchToUserName = '';
+            switchToUserName = self.defaults.switchToUserName;
         }
 
+        // default null
+        if (typeof switchToUserNameLabel === 'undefined') {
+            switchToUserNameLabel = self.defaults.switchToUserNameLabel;
+        }
+
+        // default null
+        if (typeof switchBackLabel === 'undefined') {
+            switchBackLabel = self.defaults.switchBackLabel;
+        }
+
+        showSwitchToUserNameField = Boolean(showSwitchToUserNameField);
         showSwitchToUserNameField = JSON.stringify(showSwitchToUserNameField);
-        switchToUserName = JSON.stringify(switchToUserName);
+        switchToUserName = String(switchToUserName);
+        switchToUserNameLabel = String(switchToUserNameLabel);
+        switchBackLabel = String(switchBackLabel);
 
         var content = '' +
             '<div rcm-switch-user-message' +
             ' show-switch-to-user-name-field="' + showSwitchToUserNameField + '"' +
-            ' switch-to-user-name="' + switchToUserName + '"' +
+            ' switch-to-user-name="\'' + switchToUserName + '\'"' +
+            ' switch-to-user-name-label="\'' + switchToUserNameLabel + '\'"' +
+            ' switch-back-label="\'' + switchBackLabel + '\'"' +
             '></div>';
 
         var element = jQuery(content);
@@ -72,7 +103,12 @@ angular.module('rcmSwitchUser').run(
         function (
             rcmSwitchUserMessageInject
         ) {
-            rcmSwitchUserMessageInject.injectHeader(true, null);
+            rcmSwitchUserMessageInject.injectHeader(
+                rcmSwitchUserMessageInject.defaults.showSwitchToUserNameField,
+                rcmSwitchUserMessageInject.defaults.switchToUserName,
+                rcmSwitchUserMessageInject.defaults.switchToUserNameLabel,
+                rcmSwitchUserMessageInject.defaults.switchBackLabel
+            );
         }
     ]
 );

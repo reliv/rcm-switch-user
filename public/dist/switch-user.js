@@ -44,7 +44,7 @@ angular.module('rcmSwitchUser').directive(
                     propOnSwitchBack: '=onSwitchBack', // function
 
                 },
-                template: '<style type="text/css">    .switch-user-admin button,    .switch-user-admin label,    .switch-user-admin p {        margin: 5px 0px 5px 0px;    }    .switch-user-inject .alert {        padding: 3px;    }    .switch-user-inject .alert-caution {        background-color: #FFFFAA;        border-color: #FFFF00;        color: #999900;    }</style><div class="switch-user-admin container-fluid" ng-hide="propLoading">    <div class="row form-inline">        <div class="col-md-12" ng-show="propMessage">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>        <div class="col-md-3" ng-show="propIsSu">            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>        </div>        <div class="col-md-4" ng-if="propShowSwitchToUserNameField">            <form ng-submit="propOnSwitchTo()">                <input class="form-control input-sm"                       id="switchToUserName"                       placeholder="Username"                       ng-model="propSwitchToUserName"                       type="text"/>                <button class="btn btn-default btn-sm"                        type="submit">{{propSwitchToUserNameLabel}}                </button>            </form>        </div>        <div class="col-md-4" ng-show="propIsSu">            <form ng-submit="propOnSwitchBack()">                <input class="form-control input-sm"                       id="suUserPassword"                       placeholder="password"                       ng-model="propSuUserPassword"                       ng-show="switchBackMethod == \'auth\'"                       type="password"/>                <button class="btn btn-primary btn-sm"                        type="submit">{{propSwitchBackLabel}}                </button>            </form>        </div>    </div></div>'
+                template: '<style type="text/css">    .switch-user button,    .switch-user label,    .switch-user p {        margin: 5px 0px 5px 0px;    }    .switch-user-inject .alert {        padding: 3px;    }    .switch-user-inject .alert-caution {        background-color: #FFFFAA;        border-color: #FFFF00;        color: #999900;    }</style><div class="switch-user container-fluid" ng-hide="propLoading">    <div class="row form-inline">        <div class="col-md-12" ng-show="propMessage">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>        <div class="col-md-3" ng-show="propIsSu">            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>        </div>        <div class="col-md-4" ng-show="propShowSwitchToUserNameField">            <form ng-submit="propOnSwitchTo()">                <input class="form-control input-sm"                       id="switchToUserName"                       placeholder="Username"                       ng-model="propSwitchToUserName"                       type="text"/>                <button class="btn btn-default btn-sm"                        type="submit">{{propSwitchToUserNameLabel}}                </button>            </form>        </div>        <div class="col-md-4" ng-show="propIsSu">            <form ng-submit="propOnSwitchBack()">                <input class="form-control input-sm"                       id="suUserPassword"                       placeholder="password"                       ng-model="propSuUserPassword"                       ng-show="switchBackMethod == \'auth\'"                       type="password"/>                <button class="btn btn-primary btn-sm"                        type="submit">{{propSwitchBackLabel}}                </button>            </form>        </div>    </div></div>'
             }
         }
     ]
@@ -315,6 +315,203 @@ angular.module('rcmSwitchUser').service(
     ]
 );
 
+
+/**
+ * {RcmSwitchUserAdminService}
+ *
+ * @param $sce
+ * @param rcmSwitchUserService
+ * @param rcmEventManager
+ * @param rcmApiLibMessageService
+ * @param $window
+ * @param rcmLoading
+ */
+var RcmSwitchUserAdminService = function (
+    $sce,
+    rcmSwitchUserService,
+    rcmEventManager,
+    rcmApiLibMessageService,
+    $window,
+    rcmLoading
+) {
+
+    var self = this;
+
+    self.link = function ($scope) {
+
+        $scope.loading = false;
+        $scope.isSu = false;
+        $scope.impersonatedUser = null;
+        $scope.switchBackMethod = 'auth';
+        $scope.suUserPassword = null;
+        $scope.message = null;
+
+        var setLoading = function (isLoading) {
+            $scope.loading = isLoading;
+            var loadingInt = Number(!isLoading);
+            rcmLoading.setLoading(
+                'rcmSwitchUserAdmin.loading',
+                loadingInt
+            );
+        };
+
+        /**
+         * apiInit
+         */
+        var apiInit = function () {
+            setLoading(true);
+            $scope.message = null;
+        };
+
+        /**
+         *handleMessages
+         * @param messages
+         */
+        var handleMessages = function (messages) {
+            $scope.message = null;
+            rcmApiLibMessageService.getPrimaryMessage(
+                messages,
+                function (message) {
+                    if (message) {
+                        $scope.message = message;
+                    }
+                }
+            );
+        };
+
+        /**
+         * onSwitchToSuccess
+         * @param response
+         */
+        var onSwitchToSuccess = function (response) {
+            $window.location.reload();
+        };
+
+        /**
+         * onSwitchToError
+         * @param response
+         */
+        var onSwitchToError = function (response) {
+            handleMessages(response.messages);
+            setLoading(false);
+        };
+
+        /**
+         * onSwitchBackAndToSuccess
+         * @param response
+         */
+        var onSwitchBackAndToSuccess = function (response) {
+            $scope.suUserPassword = null;
+            switchTo();
+        };
+
+        /**
+         * onSwitchBackSuccess
+         * @param response
+         */
+        var onSwitchBackSuccess = function (response) {
+            $scope.suUserPassword = null;
+            $window.location.reload();
+        };
+
+        /**
+         * onSwitchBackError
+         * @param response
+         */
+        var onSwitchBackError = function (response) {
+            $scope.suUserPassword = null;
+            handleMessages(response.messages);
+            setLoading(false);
+        };
+
+        /**
+         * switchTo
+         */
+        var switchTo = function () {
+            apiInit();
+            rcmSwitchUserService.switchUser(
+                $scope.propSwitchToUserName,
+                onSwitchToSuccess,
+                onSwitchToError
+            );
+        };
+
+        /**
+         * switchTo
+         */
+        $scope.switchTo = function () {
+            if ($scope.isSu) {
+                apiInit();
+                rcmSwitchUserService.switchUserBack(
+                    $scope.propSwitchToUserName,
+                    onSwitchBackAndToSuccess,
+                    onSwitchBackError
+                );
+                return;
+            }
+
+            switchTo();
+        };
+
+        /**
+         * switchBack
+         */
+        $scope.switchBack = function () {
+            apiInit();
+            rcmSwitchUserService.switchUserBack(
+                $scope.suUserPassword,
+                onSwitchBackSuccess,
+                onSwitchBackError
+            );
+        };
+
+        /**
+         * rcmEventManager.on
+         */
+        rcmEventManager.on(
+            'rcmSwitchUserService.suChange',
+            function (data) {
+                $scope.isSu = data.isSu;
+                $scope.impersonatedUser = data.impersonatedUser;
+                $scope.switchBackMethod = data.switchBackMethod;
+                //$scope.loading = false;
+            }
+        );
+    };
+};
+
+/**
+ * rcmSwitchUserService
+ */
+angular.module('rcmSwitchUser').service(
+    'rcmSwitchUserAdminService',
+    [
+        '$sce',
+        'rcmSwitchUserService',
+        'rcmEventManager',
+        'rcmApiLibMessageService',
+        '$window',
+        'rcmLoading',
+        function (
+            $sce,
+            rcmSwitchUserService,
+            rcmEventManager,
+            rcmApiLibMessageService,
+            $window,
+            rcmLoading
+        ) {
+            return new RcmSwitchUserAdminService(
+                $sce,
+                rcmSwitchUserService,
+                rcmEventManager,
+                rcmApiLibMessageService,
+                $window,
+                rcmLoading
+            );
+        }
+    ]
+);
+
 /**
  * RcmSwitchUserMessageInject dom loader
  *
@@ -328,27 +525,58 @@ var RcmSwitchUserMessageInject = function (
 ) {
     var self = this;
 
+    self.defaults = {
+        showSwitchToUserNameField: true,
+        switchToUserName: '',
+        switchToUserNameLabel: 'Switch to User',
+        switchBackLabel: 'End Impersonation'
+    };
+
+    /**
+     *
+     * @param {boolean} showSwitchToUserNameField
+     * @param {string} switchToUserName
+     * @param {string} switchToUserNameLabel
+     * @param {string} switchBackLabel
+     */
     self.injectHeader = function (
         showSwitchToUserNameField,
-        switchToUserName
+        switchToUserName,
+        switchToUserNameLabel,
+        switchBackLabel
     ) {
         // default true
         if (typeof showSwitchToUserNameField === 'undefined') {
-            showSwitchToUserNameField = true;
+            showSwitchToUserNameField = self.defaults.showSwitchToUserNameField;
         }
 
         // default null
         if (typeof switchToUserName === 'undefined') {
-            switchToUserName = '';
+            switchToUserName = self.defaults.switchToUserName;
         }
 
+        // default null
+        if (typeof switchToUserNameLabel === 'undefined') {
+            switchToUserNameLabel = self.defaults.switchToUserNameLabel;
+        }
+
+        // default null
+        if (typeof switchBackLabel === 'undefined') {
+            switchBackLabel = self.defaults.switchBackLabel;
+        }
+
+        showSwitchToUserNameField = Boolean(showSwitchToUserNameField);
         showSwitchToUserNameField = JSON.stringify(showSwitchToUserNameField);
-        switchToUserName = JSON.stringify(switchToUserName);
+        switchToUserName = String(switchToUserName);
+        switchToUserNameLabel = String(switchToUserNameLabel);
+        switchBackLabel = String(switchBackLabel);
 
         var content = '' +
             '<div rcm-switch-user-message' +
             ' show-switch-to-user-name-field="' + showSwitchToUserNameField + '"' +
-            ' switch-to-user-name="' + switchToUserName + '"' +
+            ' switch-to-user-name="\'' + switchToUserName + '\'"' +
+            ' switch-to-user-name-label="\'' + switchToUserNameLabel + '\'"' +
+            ' switch-back-label="\'' + switchBackLabel + '\'"' +
             '></div>';
 
         var element = jQuery(content);
@@ -389,7 +617,12 @@ angular.module('rcmSwitchUser').run(
         function (
             rcmSwitchUserMessageInject
         ) {
-            rcmSwitchUserMessageInject.injectHeader(true, null);
+            rcmSwitchUserMessageInject.injectHeader(
+                rcmSwitchUserMessageInject.defaults.showSwitchToUserNameField,
+                rcmSwitchUserMessageInject.defaults.switchToUserName,
+                rcmSwitchUserMessageInject.defaults.switchToUserNameLabel,
+                rcmSwitchUserMessageInject.defaults.switchBackLabel
+            );
         }
     ]
 );
@@ -436,7 +669,9 @@ angular.module('rcmSwitchUser').directive(
                 link: link,
                 scope: {
                     propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
-                    propSwitchToUserName: '=switchToUserName' // string
+                    propSwitchToUserName: '=switchToUserName', // string
+                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+                    propSwitchBackLabel: '=switchBackLabel' // string
                 },
                 template: '' +
                 '<div class="switch-user-inject" ng-if="isSu">' +
@@ -444,6 +679,8 @@ angular.module('rcmSwitchUser').directive(
                 '  <div rcm-switch-user-admin ' +
                 '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
                 '       switch-to-user-name="propSwitchToUserName"' +
+                '       switch-to-user-name-label="propSwitchToUserNameLabel"' +
+                '       switch-back-label="propSwitchBackLabel"' +
                 '  ></div> ' +
                 ' </div> ' +
                 '</div>'
@@ -458,170 +695,12 @@ angular.module('rcmSwitchUser').directive(
 angular.module('rcmSwitchUser').directive(
     'rcmSwitchUserAdmin',
     [
-        '$sce',
-        'rcmSwitchUserService',
-        'rcmEventManager',
-        'rcmApiLibMessageService',
-        '$window',
-        'rcmLoading',
+        'rcmSwitchUserAdminService',
         function (
-            $sce,
-            rcmSwitchUserService,
-            rcmEventManager,
-            rcmApiLibMessageService,
-            $window,
-            rcmLoading
+            rcmSwitchUserAdminService
         ) {
-            /**
-             *
-             * @param $scope
-             * @param element
-             * @param attrs
-             */
-            function link($scope, element, attrs) {
-
-                $scope.loading = false;
-                $scope.isSu = false;
-                $scope.impersonatedUser = null;
-                $scope.switchBackMethod = 'auth';
-                $scope.suUserPassword = null;
-                $scope.message = null;
-
-                var setLoading = function (isLoading) {
-                    $scope.loading = isLoading;
-                    var loadingInt = Number(!isLoading);
-                    rcmLoading.setLoading(
-                        'rcmSwitchUserAdmin.loading',
-                        loadingInt
-                    );
-                };
-
-                /**
-                 * apiInit
-                 */
-                var apiInit = function () {
-                    setLoading(true);
-                    $scope.message = null;
-                };
-
-                /**
-                 *handleMessages
-                 * @param messages
-                 */
-                var handleMessages = function (messages) {
-                    $scope.message = null;
-                    rcmApiLibMessageService.getPrimaryMessage(
-                        messages,
-                        function (message) {
-                            if (message) {
-                                $scope.message = message;
-                            }
-                        }
-                    );
-                };
-
-                /**
-                 * onSwitchToSuccess
-                 * @param response
-                 */
-                var onSwitchToSuccess = function (response) {
-                    $window.location.reload();
-                };
-
-                /**
-                 * onSwitchToError
-                 * @param response
-                 */
-                var onSwitchToError = function (response) {
-                    handleMessages(response.messages);
-                    setLoading(false);
-                };
-
-                /**
-                 * onSwitchBackAndToSuccess
-                 * @param response
-                 */
-                var onSwitchBackAndToSuccess = function (response) {
-                    $scope.suUserPassword = null;
-                    switchTo();
-                };
-
-                /**
-                 * onSwitchBackSuccess
-                 * @param response
-                 */
-                var onSwitchBackSuccess = function (response) {
-                    $scope.suUserPassword = null;
-                    $window.location.reload();
-                };
-
-                /**
-                 * onSwitchBackError
-                 * @param response
-                 */
-                var onSwitchBackError = function (response) {
-                    $scope.suUserPassword = null;
-                    handleMessages(response.messages);
-                    setLoading(false);
-                };
-
-                /**
-                 * switchTo
-                 */
-                var switchTo = function () {
-                    apiInit();
-                    rcmSwitchUserService.switchUser(
-                        $scope.propSwitchToUserName,
-                        onSwitchToSuccess,
-                        onSwitchToError
-                    );
-                };
-
-                /**
-                 * switchTo
-                 */
-                $scope.switchTo = function () {
-                    if ($scope.isSu) {
-                        apiInit();
-                        rcmSwitchUserService.switchUserBack(
-                            $scope.propSwitchToUserName,
-                            onSwitchBackAndToSuccess,
-                            onSwitchBackError
-                        );
-                        return;
-                    }
-
-                    switchTo();
-                };
-
-                /**
-                 * switchBack
-                 */
-                $scope.switchBack = function () {
-                    apiInit();
-                    rcmSwitchUserService.switchUserBack(
-                        $scope.suUserPassword,
-                        onSwitchBackSuccess,
-                        onSwitchBackError
-                    );
-                };
-
-                /**
-                 * rcmEventManager.on
-                 */
-                rcmEventManager.on(
-                    'rcmSwitchUserService.suChange',
-                    function (data) {
-                        $scope.isSu = data.isSu;
-                        $scope.impersonatedUser = data.impersonatedUser;
-                        $scope.switchBackMethod = data.switchBackMethod;
-                        //$scope.loading = false;
-                    }
-                );
-            }
-
             return {
-                link: link,
+                link: rcmSwitchUserAdminService.link,
                 scope: {
                     propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
                     propSwitchToUserName: '=switchToUserName', // string
@@ -634,7 +713,10 @@ angular.module('rcmSwitchUser').directive(
                 ' is-su="isSu"' +
                 ' impersonated-user="impersonatedUser"' +
                 ' switch-back-method="switchBackMethod"' +
+                ' show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
                 ' switch-to-user-name="propSwitchToUserName"' +
+                ' switch-to-user-name-label="propSwitchToUserNameLabel"' +
+                ' switch-back-label="propSwitchBackLabel"' +
                 ' su-user-password="suUserPassword"' +
                 ' message="message"' +
                 ' on-switch-to="switchTo"' +

@@ -4,6 +4,7 @@ module.exports = function (grunt) {
         'src/switch-user-module.js',
         'src/switch-to-user-directive.js',
         'src/switch-user-service.js',
+        'src/switch-user-admin-service.js',
         'src/switch-user-message-inject.js',
         'src/switch-user-message.js',
         'src/switch-user-admin.js'

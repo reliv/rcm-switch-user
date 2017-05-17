@@ -80,6 +80,8 @@ return [
             'icon' => '',
             'defaultInstanceConfig' => [
                 'showSwitchToUserNameField' => true,
+                'switchToUserNameLabel' => 'Switch to User',
+                'switchBackLabel' => 'End Impersonation',
             ],
             'canCache' => false
         ],
