@@ -2,22 +2,12 @@
 
 namespace Rcm\SwitchUser\Restriction;
 
-use RcmUser\Service\RcmUserService;
+use Interop\Container\ContainerInterface;
 use RcmUser\User\Entity\User;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * class CompositeRestriction
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class CompositeRestriction implements Restriction
 {
@@ -31,10 +21,10 @@ class CompositeRestriction implements Restriction
     protected $restrictions = [];
 
     /**
-     * @param array                   $config
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param array                                      $config
+     * @param ContainerInterface|ServiceLocatorInterface $serviceLocator
      */
-    public function __construct($config, ServiceLocatorInterface $serviceLocator)
+    public function __construct($config, $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
         $this->buildRestrictions($config['Rcm\\SwitchUser']['restrictions']);
@@ -74,7 +64,7 @@ class CompositeRestriction implements Restriction
      * @param User $adminUser
      * @param User $targetUser
      *
-     * @return bool
+     * @return RestrictionResult
      */
     public function allowed(User $adminUser, User $targetUser)
     {

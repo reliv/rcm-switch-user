@@ -5,17 +5,7 @@ namespace Rcm\SwitchUser\Service;
 use RcmUser\Service\RcmUserService;
 
 /**
- * Class SwitchUserAclService
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class SwitchUserAclService
 {
@@ -84,7 +74,7 @@ class SwitchUserAclService
      *
      * @return bool|mixed
      */
-    public function isUserAllowed($resourceId, $privilege, $providerId, $user)
+    public function isUserAllowed($resourceId, $privilege, $providerId = null, $user)
     {
         $suUser = $this->getAclUser($user);
 
@@ -109,7 +99,7 @@ class SwitchUserAclService
      *
      * @return bool|mixed
      */
-    public function currentUserIsAllowed($resourceId, $privilege, $providerId)
+    public function currentUserIsAllowed($resourceId, $privilege, $providerId = null)
     {
         $user = $this->rcmUserService->getCurrentUser();
 
@@ -136,7 +126,7 @@ class SwitchUserAclService
     public function isImpersonatorUserAllowed(
         $resourceId,
         $privilege,
-        $providerId,
+        $providerId = null,
         $user
     ) {
         $user = $this->switchUserService->getImpersonatorUser($user);
@@ -148,7 +138,7 @@ class SwitchUserAclService
         return $this->rcmUserService->isUserAllowed(
             $resourceId,
             $privilege,
-            $providerId,
+            $providerId = null,
             $user
         );
     }
@@ -165,7 +155,7 @@ class SwitchUserAclService
     public function isCurrentImpersonatorUserAllowed(
         $resourceId,
         $privilege,
-        $providerId
+        $providerId = null
     ) {
         $user = $this->rcmUserService->getCurrentUser();
 
