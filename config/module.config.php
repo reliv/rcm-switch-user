@@ -78,7 +78,9 @@ return [
             'display' => 'Switch User',
             'tooltip' => 'Switch User Admin options',
             'icon' => '',
-            'defaultInstanceConfig' => [],
+            'defaultInstanceConfig' => [
+                'showSwitchToUserNameField' => true,
+            ],
             'canCache' => false
         ],
     ],

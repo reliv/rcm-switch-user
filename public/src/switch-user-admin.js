@@ -169,7 +169,10 @@ angular.module('rcmSwitchUser').directive(
             return {
                 link: link,
                 scope: {
-                    propSwitchToUserName: '=switchToUserName'
+                    propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
+                    propSwitchToUserName: '=switchToUserName', // string
+                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+                    propSwitchBackLabel: '=switchBackLabel' // string
                 },
                 template: '' +
                 '<rcm-switch-user-switch-to-user' +

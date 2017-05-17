@@ -38,11 +38,17 @@ angular.module('rcmSwitchUser').directive(
 
             return {
                 link: link,
-                scope: {},
+                scope: {
+                    propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
+                    propSwitchToUserName: '=switchToUserName' // string
+                },
                 template: '' +
                 '<div class="switch-user-inject" ng-if="isSu">' +
                 ' <div class="alert alert-caution" role="alert"> ' +
-                '  <div rcm-switch-user-admin switch-to-user-name="null"></div> ' +
+                '  <div rcm-switch-user-admin ' +
+                '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
+                '       switch-to-user-name="propSwitchToUserName"' +
+                '  ></div> ' +
                 ' </div> ' +
                 '</div>'
             }

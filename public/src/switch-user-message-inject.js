@@ -1,15 +1,39 @@
 /**
  * RcmSwitchUserMessageInject dom loader
+ *
  * @param $compile
+ * @param JSON
+ * @constructor
  */
 var RcmSwitchUserMessageInject = function (
-    $compile
+    $compile,
+    JSON
 ) {
     var self = this;
 
-    self.injectHeader = function () {
+    self.injectHeader = function (
+        showSwitchToUserNameField,
+        switchToUserName
+    ) {
+        // default true
+        if (typeof showSwitchToUserNameField === 'undefined') {
+            showSwitchToUserNameField = true;
+        }
 
-        var content = '<div rcm-switch-user-message></div>';
+        // default null
+        if (typeof switchToUserName === 'undefined') {
+            switchToUserName = '';
+        }
+
+        showSwitchToUserNameField = JSON.stringify(showSwitchToUserNameField);
+        switchToUserName = JSON.stringify(switchToUserName);
+
+        var content = '' +
+            '<div rcm-switch-user-message' +
+            ' show-switch-to-user-name-field="' + showSwitchToUserNameField + '"' +
+            ' switch-to-user-name="' + switchToUserName + '"' +
+            '></div>';
+
         var element = jQuery(content);
         element.prependTo('body');
 
@@ -32,14 +56,15 @@ angular.module('rcmSwitchUser').service(
             $compile
         ) {
             return new RcmSwitchUserMessageInject(
-                $compile
+                $compile,
+                JSON
             );
         }
     ]
 );
 
 /**
- * Example usage - To inject the switch user, add this code to your application
+ * Example usage - To inject the switch user header bar, add this code to your application
  */
 angular.module('rcmSwitchUser').run(
     [
@@ -47,7 +72,7 @@ angular.module('rcmSwitchUser').run(
         function (
             rcmSwitchUserMessageInject
         ) {
-            rcmSwitchUserMessageInject.injectHeader();
+            rcmSwitchUserMessageInject.injectHeader(true, null);
         }
     ]
 );

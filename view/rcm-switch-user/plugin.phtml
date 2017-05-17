@@ -1,4 +1,10 @@
+<?php
+$showSwitchToUserNameField = json_encode($this->instanceConfig['showSwitchToUserNameField']);
+?>
 <div>
     <h1>Switch User</h1>
-    <div rcm-switch-user-admin="" switch-to-user-name="null"></div>
+    <div rcm-switch-user-admin=""
+         show-switch-to-user-name-field="<?= $showSwitchToUserNameField ?>"
+         switch-to-user-name="null">
+    </div>
 </div>

@@ -27,11 +27,15 @@ angular.module('rcmSwitchUser').directive(
                     propIsSu: '=isSu', // Bool
                     propImpersonatedUser: '=impersonatedUser', // {User}
                     propSwitchBackMethod: '=switchBackMethod', // string ('auth' or 'basic')
+                    propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
                     propSwitchToUserName: '=switchToUserName', // string
+                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+                    propSwitchBackLabel: '=switchBackLabel', // string
                     propSuUserPassword: '=suUserPassword', // string
                     propMessage: '=message', // {message},
                     propOnSwitchTo: '=onSwitchTo', // function
                     propOnSwitchBack: '=onSwitchBack', // function
+
                 },
                 template: '<%= inlineTemplate("src/switch-to-user-directive.html") %>'
             }

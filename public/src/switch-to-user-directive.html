@@ -25,7 +25,7 @@
         <div class="col-md-3" ng-show="propIsSu">
             <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" ng-if="propShowSwitchToUserNameField">
             <form ng-submit="propOnSwitchTo()">
                 <input class="form-control input-sm"
                        id="switchToUserName"
@@ -33,7 +33,7 @@
                        ng-model="propSwitchToUserName"
                        type="text"/>
                 <button class="btn btn-default btn-sm"
-                        type="submit">Switch to User
+                        type="submit">{{propSwitchToUserNameLabel}}
                 </button>
             </form>
         </div>
@@ -46,7 +46,7 @@
                        ng-show="switchBackMethod == 'auth'"
                        type="password"/>
                 <button class="btn btn-primary btn-sm"
-                        type="submit">End Impersonation
+                        type="submit">{{propSwitchBackLabel}}
                 </button>
             </form>
         </div>
