@@ -409,9 +409,9 @@ angular.module('rcmSwitchUser').directive(
                 link: link,
                 scope: {},
                 template: '' +
-                '<div class="rcm-switch-user-inject" ng-if="isSu">' +
+                '<div class="switch-user-inject" ng-if="isSu">' +
                 ' <div class="alert alert-caution" role="alert"> ' +
-                '  <div rcm-switch-user-admin switch-to-user-name=""></div> ' +
+                '  <div rcm-switch-user-admin switch-to-user-name="null"></div> ' +
                 ' </div> ' +
                 '</div>'
             }
