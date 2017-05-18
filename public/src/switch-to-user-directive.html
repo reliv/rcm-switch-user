@@ -13,18 +13,18 @@
         </div>
         <div class="col-md-3" ng-show="propIsSu">
             <label class="switch-user-info-content">
-                Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}
+                {{propSwitchUserInfoContentPrefix}} {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}
             </label>
         </div>
         <div class="col-md-4" ng-show="propShowSwitchToUserNameField">
             <form ng-submit="propOnSwitchTo()">
                 <input class="form-control input-sm"
                        id="switchToUserName"
-                       placeholder="Username"
+                       placeholder="{{propSwitchToUserNamePlaceholder}}"
                        ng-model="propSwitchToUserName"
                        type="text"/>
                 <button class="btn btn-default btn-sm"
-                        type="submit">{{propSwitchToUserNameLabel}}
+                        type="submit">{{propSwitchToUserNameButtonLabel}}
                 </button>
             </form>
         </div>
@@ -37,7 +37,7 @@
                        ng-show="propSwitchBackMethod == 'auth'"
                        type="password"/>
                 <button class="btn btn-primary btn-sm"
-                        type="submit">{{propSwitchBackLabel}}
+                        type="submit">{{propSwitchBackButtonLabel}}
                 </button>
             </form>
         </div>

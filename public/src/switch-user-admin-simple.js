@@ -19,9 +19,11 @@ angular.module('rcmSwitchUser').directive(
                 ' switch-back-method="switchBackMethod"' +
                 ' show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
                 ' switch-to-user-name="propSwitchToUserName"' +
-                ' switch-to-user-name-label="propSwitchToUserNameLabel"' +
-                ' switch-back-label="propSwitchBackLabel"' +
+                ' switch-to-user-name-placeholder="propSwitchToUserNamePlaceholder"' +
+                ' switch-to-user-name-button-label="propSwitchToUserNameButtonLabel"' +
+                ' switch-back-button-label="propSwitchBackButtonLabel"' +
                 ' su-user-password="suUserPassword"' +
+                ' switch-user-info-content-prefix="propSwitchUserInfoContentPrefix"' +
                 ' message="message"' +
                 ' on-switch-to="switchTo"' +
                 ' on-switch-back="switchBack"' +

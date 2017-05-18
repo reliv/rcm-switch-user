@@ -41,8 +41,10 @@ angular.module('rcmSwitchUser').directive(
                 scope: {
                     propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
                     propSwitchToUserName: '=switchToUserName', // string
-                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
-                    propSwitchBackLabel: '=switchBackLabel' // string
+                    propSwitchToUserNamePlaceholder: '=switchToUserNamePlaceholder', // string
+                    propSwitchToUserNameButtonLabel: '=switchToUserNameButtonLabel', // string
+                    propSwitchBackButtonLabel: '=switchBackButtonLabel', // string,
+                    propSwitchUserInfoContentPrefix: '=switchUserInfoContentPrefix' // string
                 },
                 template: '' +
                 '<style type="text/css">' +
@@ -60,8 +62,10 @@ angular.module('rcmSwitchUser').directive(
                 '  <div rcm-switch-user-admin-horizontal ' +
                 '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
                 '       switch-to-user-name="propSwitchToUserName"' +
-                '       switch-to-user-name-label="propSwitchToUserNameLabel"' +
-                '       switch-back-label="propSwitchBackLabel"' +
+                '       switch-to-user-name-placeholder="propSwitchToUserNamePlaceholder"' +
+                '       switch-to-user-name-button-label="propSwitchToUserNameButtonLabel"' +
+                '       switch-back-button-label="propSwitchBackButtonLabel"' +
+                '       switch-user-info-content-prefix="propSwitchUserInfoContentPrefix"' +
                 '  ></div> ' +
                 ' </div> ' +
                 '</div>'

@@ -7,28 +7,25 @@
         </div>
     </div>
     <div class="row">
-        <!--<div class="col-sm-12" ng-show="propIsSu">-->
-        <!--<h3>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</h3>-->
-        <!--</div>-->
         <div class="col-sm-12">
             <form ng-submit="propOnSwitchTo()">
                 <div class="input-group input-group-sm">
                     <input class="form-control"
                            id="switchToUserName"
-                           placeholder="Username"
+                           placeholder="{{propSwitchToUserNamePlaceholder}}"
                            ng-model="propSwitchToUserName"
                            type="text"
                     >
                     <span class="input-group-btn">
                         <button class="btn btn-success"
                                 type="submit">
-                            {{propSwitchToUserNameLabel}}
+                            {{propSwitchToUserNameButtonLabel}}
                         </button>
                         <button class="btn btn-warning"
                                 ng-click="propOnSwitchBack()"
                                 ng-show="propSwitchBackMethod != 'auth' && propIsSu"
                                 type="button">
-                            {{propSwitchBackLabel}}
+                            {{propSwitchBackButtonLabel}}
                         </button>
                         <button class="btn btn-default"
                                 ng-click="showImpersonatorDetails = !showImpersonatorDetails"
@@ -51,7 +48,7 @@
                     <span class="input-group-btn">
                         <button class="btn btn-warning"
                                 type="submit">
-                            {{propSwitchBackLabel}}
+                            {{propSwitchBackButtonLabel}}
                         </button>
                         <button class="btn btn-default"
                                 ng-click="showImpersonatorDetails = !showImpersonatorDetails"
@@ -62,7 +59,7 @@
                 </div>
             </form>
             <rcm-switch-user-tooltip
-                    content="'Impersonating: ' + propImpersonatedUser.id + ' ' + propImpersonatedUser.username"
+                    content="propSwitchUserInfoContentPrefix + ' ' + propImpersonatedUser.id + ' ' + propImpersonatedUser.username"
                     show="showImpersonatorDetails && propIsSu"
             >
                 tooltip
