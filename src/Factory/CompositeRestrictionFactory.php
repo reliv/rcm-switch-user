@@ -2,38 +2,27 @@
 
 namespace Rcm\SwitchUser\Factory;
 
+use Interop\Container\ContainerInterface;
 use Rcm\SwitchUser\Restriction\CompositeRestriction;
-use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Class CompositeRestrictionFactory
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
-class CompositeRestrictionFactory implements FactoryInterface
+class CompositeRestrictionFactory
 {
     /**
-     * Create service
+     * @param ContainerInterface|ServiceLocatorInterface $container
      *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
+     * @return CompositeRestriction
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke($container)
     {
-        $config = $serviceLocator->get('config');
+        $config = $container->get('config');
 
         return new CompositeRestriction(
             $config,
-            $serviceLocator
+            $container
         );
     }
 }

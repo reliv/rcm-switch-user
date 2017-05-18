@@ -140,6 +140,11 @@ return [
     /* SERVICE MANAGER */
     'service_manager' => [
         'config_factories' => [
+            \Rcm\SwitchUser\Middleware\RcmSwitchUserAcl::class => [
+                'arguments' => [
+                    'Rcm\SwitchUser\Service\SwitchUserAclService',
+                ]
+            ],
             'Rcm\SwitchUser\Restriction\AclRestriction' => [
                 'arguments' => [
                     'config',

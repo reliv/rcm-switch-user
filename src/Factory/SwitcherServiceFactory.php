@@ -2,37 +2,27 @@
 
 namespace Rcm\SwitchUser\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
+use Interop\Container\ContainerInterface;
+use Rcm\SwitchUser\Switcher\Switcher;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Class SwitcherServiceFactory
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Rcm\SwitchUser\Factory
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
-class SwitcherServiceFactory implements FactoryInterface
+class SwitcherServiceFactory
 {
     /**
-     * Create service
+     * @param ContainerInterface|ServiceLocatorInterface $container
      *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
+     * @return Switcher
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke($container)
     {
-        $config = $serviceLocator->get('config');
+        $config = $container->get('config');
 
         $switcherMethod = $config['Rcm\\SwitchUser']['switcherMethod'];
         $switcherServiceName = $config['Rcm\\SwitchUser']['switcherServices'][$switcherMethod];
-        $switcher = $serviceLocator->get($switcherServiceName);
+        $switcher = $container->get($switcherServiceName);
 
         return $switcher;
     }
