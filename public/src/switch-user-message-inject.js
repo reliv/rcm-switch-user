@@ -3,66 +3,103 @@
  *
  * @param $compile
  * @param JSON
+ * @param rcmSwitchUserConfig
  * @constructor
  */
 var RcmSwitchUserMessageInject = function (
     $compile,
-    JSON
+    JSON,
+    rcmSwitchUserConfig
 ) {
     var self = this;
 
-    self.defaults = {
-        showSwitchToUserNameField: true,
-        switchToUserName: '',
-        switchToUserNameLabel: 'Switch to User',
-        switchBackLabel: 'End Impersonation'
-    };
+    /**
+     *
+     * @param value
+     * @param defaultKey
+     * @param fallback
+     * @returns {*}
+     */
+    self.getDefault = function (value, defaultKey, fallback) {
 
+        if (typeof value === 'undefined') {
+            value = rcmSwitchUserConfig.defaults[defaultKey];
+        }
+
+        if (typeof value === 'undefined') {
+            value = fallback;
+        }
+
+        return value;
+    };
     /**
      *
      * @param {boolean} showSwitchToUserNameField
      * @param {string} switchToUserName
-     * @param {string} switchToUserNameLabel
-     * @param {string} switchBackLabel
+     * @param {string} switchToUserNamePlaceholder
+     * @param {string} switchToUserNameButtonLabel
+     * @param {string} switchBackButtonLabel
      */
     self.injectHeader = function (
         showSwitchToUserNameField,
         switchToUserName,
-        switchToUserNameLabel,
-        switchBackLabel
+        switchToUserNamePlaceholder,
+        switchToUserNameButtonLabel,
+        switchBackButtonLabel,
+        switchUserInfoContentPrefix
     ) {
-        // default true
-        if (typeof showSwitchToUserNameField === 'undefined') {
-            showSwitchToUserNameField = self.defaults.showSwitchToUserNameField;
-        }
+        showSwitchToUserNameField = self.getDefault(
+            showSwitchToUserNameField,
+            'showSwitchToUserNameField',
+            true
+        );
 
-        // default null
-        if (typeof switchToUserName === 'undefined') {
-            switchToUserName = self.defaults.switchToUserName;
-        }
+        switchToUserName = self.getDefault(
+            switchToUserName,
+            'switchToUserName',
+            ''
+        );
 
-        // default null
-        if (typeof switchToUserNameLabel === 'undefined') {
-            switchToUserNameLabel = self.defaults.switchToUserNameLabel;
-        }
+        switchToUserNamePlaceholder = self.getDefault(
+            switchToUserNamePlaceholder,
+            'switchToUserNamePlaceholder',
+            'Username'
+        );
 
-        // default null
-        if (typeof switchBackLabel === 'undefined') {
-            switchBackLabel = self.defaults.switchBackLabel;
-        }
+        switchToUserNameButtonLabel = self.getDefault(
+            switchToUserNameButtonLabel,
+            'switchToUserNameButtonLabel',
+            'Switch to User'
+        );
+
+        switchBackButtonLabel = self.getDefault(
+            switchBackButtonLabel,
+            'switchBackButtonLabel',
+            'Switch Back'
+        );
+
+        switchUserInfoContentPrefix = self.getDefault(
+            switchUserInfoContentPrefix,
+            'switchUserInfoContentPrefix',
+            'Impersonating:'
+        );
 
         showSwitchToUserNameField = Boolean(showSwitchToUserNameField);
         showSwitchToUserNameField = JSON.stringify(showSwitchToUserNameField);
         switchToUserName = String(switchToUserName);
-        switchToUserNameLabel = String(switchToUserNameLabel);
-        switchBackLabel = String(switchBackLabel);
+        switchToUserNamePlaceholder = String(switchToUserNamePlaceholder);
+        switchToUserNameButtonLabel = String(switchToUserNameButtonLabel);
+        switchBackButtonLabel = String(switchBackButtonLabel);
+        switchUserInfoContentPrefix = String(switchUserInfoContentPrefix);
 
         var content = '' +
             '<div rcm-switch-user-message' +
             ' show-switch-to-user-name-field="' + showSwitchToUserNameField + '"' +
             ' switch-to-user-name="\'' + switchToUserName + '\'"' +
-            ' switch-to-user-name-label="\'' + switchToUserNameLabel + '\'"' +
-            ' switch-back-label="\'' + switchBackLabel + '\'"' +
+            ' switch-to-user-name-placeholder="\'' + switchToUserNamePlaceholder + '\'"' +
+            ' switch-to-user-name-button-label="\'' + switchToUserNameButtonLabel + '\'"' +
+            ' switch-back-button-label="\'' + switchBackButtonLabel + '\'"' +
+            ' switch-user-info-content-prefix="\'' + switchUserInfoContentPrefix + '\'""' +
             '></div>';
 
         var element = jQuery(content);
@@ -83,12 +120,15 @@ angular.module('rcmSwitchUser').service(
     'rcmSwitchUserMessageInject',
     [
         '$compile',
+        'rcmSwitchUserConfig',
         function (
-            $compile
+            $compile,
+            rcmSwitchUserConfig
         ) {
             return new RcmSwitchUserMessageInject(
                 $compile,
-                JSON
+                JSON,
+                rcmSwitchUserConfig
             );
         }
     ]
@@ -100,14 +140,18 @@ angular.module('rcmSwitchUser').service(
 angular.module('rcmSwitchUser').run(
     [
         'rcmSwitchUserMessageInject',
+        'rcmSwitchUserConfig',
         function (
-            rcmSwitchUserMessageInject
+            rcmSwitchUserMessageInject,
+            rcmSwitchUserConfig
         ) {
             rcmSwitchUserMessageInject.injectHeader(
-                rcmSwitchUserMessageInject.defaults.showSwitchToUserNameField,
-                rcmSwitchUserMessageInject.defaults.switchToUserName,
-                rcmSwitchUserMessageInject.defaults.switchToUserNameLabel,
-                rcmSwitchUserMessageInject.defaults.switchBackLabel
+                rcmSwitchUserConfig.defaults.showSwitchToUserNameField,
+                rcmSwitchUserConfig.defaults.switchToUserName,
+                rcmSwitchUserConfig.defaults.switchToUserNamePlaceholder,
+                rcmSwitchUserConfig.defaults.switchToUserNameButtonLabel,
+                rcmSwitchUserConfig.defaults.switchBackButtonLabel,
+                rcmSwitchUserConfig.defaults.switchUserInfoContentPrefix
             );
         }
     ]

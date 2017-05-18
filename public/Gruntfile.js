@@ -2,6 +2,7 @@ module.exports = function (grunt) {
 
     var files = [
         'src/switch-user-module.js',
+        'src/config.js',
         'src/switch-to-user-directive.js',
         'src/switch-to-user-directive-simple.js',
         'src/switch-to-user-directive-horizontal.js',
