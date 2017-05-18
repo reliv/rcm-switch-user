@@ -45,9 +45,19 @@ angular.module('rcmSwitchUser').directive(
                     propSwitchBackLabel: '=switchBackLabel' // string
                 },
                 template: '' +
-                '<div class="switch-user-inject" ng-if="isSu">' +
+                '<style type="text/css">' +
+                '    .switch-user-message .alert {' +
+                '        padding: 3px;' +
+                '    }' +
+                '    .switch-user-message .alert-caution {' +
+                '       background-color: #FFFFAA;' +
+                '       border-color: #FFFF00;' +
+                '       color: #999900;' +
+                '   }' +
+                '</style>' +
+                '<div class="switch-user-message" ng-if="isSu">' +
                 ' <div class="alert alert-caution" role="alert"> ' +
-                '  <div rcm-switch-user-admin ' +
+                '  <div rcm-switch-user-admin-horizontal ' +
                 '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
                 '       switch-to-user-name="propSwitchToUserName"' +
                 '       switch-to-user-name-label="propSwitchToUserNameLabel"' +

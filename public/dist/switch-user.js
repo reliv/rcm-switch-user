@@ -6,7 +6,7 @@ if (typeof rcm != 'undefined') {
 angular.module('rcmSwitchUser', ['RcmLoading', 'RcmJsLib', 'rcmApiLib']);
 
 /**
- * rcmSwitchUserAdmin
+ * rcmSwitchUserSwitchToUser
  */
 angular.module('rcmSwitchUser').directive(
     'rcmSwitchUserSwitchToUser',
@@ -42,9 +42,96 @@ angular.module('rcmSwitchUser').directive(
                     propMessage: '=message', // {message},
                     propOnSwitchTo: '=onSwitchTo', // function
                     propOnSwitchBack: '=onSwitchBack', // function
-
                 },
-                template: '<style type="text/css">    .switch-user button,    .switch-user label,    .switch-user p {        margin: 5px 0px 5px 0px;    }    .switch-user-inject .alert {        padding: 3px;    }    .switch-user-inject .alert-caution {        background-color: #FFFFAA;        border-color: #FFFF00;        color: #999900;    }</style><div class="switch-user container-fluid" ng-hide="propLoading">    <div class="row form-inline">        <div class="col-md-12" ng-show="propMessage">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>        <div class="col-md-3" ng-show="propIsSu">            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>        </div>        <div class="col-md-4" ng-show="propShowSwitchToUserNameField">            <form ng-submit="propOnSwitchTo()">                <input class="form-control input-sm"                       id="switchToUserName"                       placeholder="Username"                       ng-model="propSwitchToUserName"                       type="text"/>                <button class="btn btn-default btn-sm"                        type="submit">{{propSwitchToUserNameLabel}}                </button>            </form>        </div>        <div class="col-md-4" ng-show="propIsSu">            <form ng-submit="propOnSwitchBack()">                <input class="form-control input-sm"                       id="suUserPassword"                       placeholder="password"                       ng-model="propSuUserPassword"                       ng-show="switchBackMethod == \'auth\'"                       type="password"/>                <button class="btn btn-primary btn-sm"                        type="submit">{{propSwitchBackLabel}}                </button>            </form>        </div>    </div></div>'
+                template: '<style type="text/css">    .switch-user.default label,    .switch-user.default p {        margin: 5px 0px 5px 0px;    }</style><div class="switch-user default container-fluid" ng-hide="propLoading">    <div class="row form-inline">        <div class="col-md-12" ng-show="propMessage">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>        <div class="col-md-3" ng-show="propIsSu">            <label class="switch-user-info-content">                Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}            </label>        </div>        <div class="col-md-4" ng-show="propShowSwitchToUserNameField">            <form ng-submit="propOnSwitchTo()">                <input class="form-control input-sm"                       id="switchToUserName"                       placeholder="Username"                       ng-model="propSwitchToUserName"                       type="text"/>                <button class="btn btn-default btn-sm"                        type="submit">{{propSwitchToUserNameLabel}}                </button>            </form>        </div>        <div class="col-md-4" ng-show="propIsSu">            <form ng-submit="propOnSwitchBack()">                <input class="form-control input-sm"                       id="suUserPassword"                       placeholder="password"                       ng-model="propSuUserPassword"                       ng-show="propSwitchBackMethod == \'auth\'"                       type="password"/>                <button class="btn btn-primary btn-sm"                        type="submit">{{propSwitchBackLabel}}                </button>            </form>        </div>    </div></div>'
+            }
+        }
+    ]
+);
+
+/**
+ * rcmSwitchUserSwitchToUserSimple
+ */
+angular.module('rcmSwitchUser').directive(
+    'rcmSwitchUserSwitchToUserSimple',
+    [
+        '$sce',
+        '$window',
+        function (
+            $sce,
+            $window
+        ) {
+            /**
+             *
+             * @param $scope
+             * @param element
+             * @param attrs
+             */
+            function link($scope, element, attrs) {
+
+            }
+
+            return {
+                link: link,
+                scope: {
+                    propLoading: '=loading', // Bool
+                    propIsSu: '=isSu', // Bool
+                    propImpersonatedUser: '=impersonatedUser', // {User}
+                    propSwitchBackMethod: '=switchBackMethod', // string ('auth' or 'basic')
+                    propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
+                    propSwitchToUserName: '=switchToUserName', // string
+                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+                    propSwitchBackLabel: '=switchBackLabel', // string
+                    propSuUserPassword: '=suUserPassword', // string
+                    propMessage: '=message', // {message},
+                    propOnSwitchTo: '=onSwitchTo', // function
+                    propOnSwitchBack: '=onSwitchBack', // function
+                },
+                template: '<div class="switch-user">    <div class="row" ng-show="propMessage">        <div class="col-sm-12">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>    </div>    <div class="row">        <!--<div class="col-sm-12" ng-show="propIsSu">-->        <!--<h3>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</h3>-->        <!--</div>-->        <div class="col-sm-12">            <form ng-submit="propOnSwitchTo()">                <div class="input-group input-group-sm">                    <input class="form-control"                           id="switchToUserName"                           placeholder="Username"                           ng-model="propSwitchToUserName"                           type="text"                    >                    <span class="input-group-btn">                        <button class="btn btn-success"                                type="submit">                            {{propSwitchToUserNameLabel}}                        </button>                        <button class="btn btn-warning"                                ng-click="propOnSwitchBack()"                                ng-show="propSwitchBackMethod != \'auth\' && propIsSu"                                type="button">                            {{propSwitchBackLabel}}                        </button>                        <button class="btn btn-default"                                ng-click="showImpersonatorDetails = !showImpersonatorDetails"                                ng-show="propSwitchBackMethod != \'auth\' && propIsSu"                                type="button">                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>                        </button>                    </span>                </div>            </form>            <form ng-show="propSwitchBackMethod == \'auth\' && propIsSu"                  ng-submit="propOnSwitchBack()">                <div class="input-group  input-group-sm">                    <input class="form-control"                           id="suUserPassword"                           placeholder="password"                           ng-model="propSuUserPassword"                           type="password"                    >                    <span class="input-group-btn">                        <button class="btn btn-warning"                                type="submit">                            {{propSwitchBackLabel}}                        </button>                        <button class="btn btn-default"                                ng-click="showImpersonatorDetails = !showImpersonatorDetails"                                type="button">                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>                        </button>                    </span>                </div>            </form>            <rcm-switch-user-tooltip                    content="\'Impersonating: \' + propImpersonatedUser.id + \' \' + propImpersonatedUser.username"                    show="showImpersonatorDetails && propIsSu"            >                tooltip            </rcm-switch-user-tooltip>        </div>    </div></div>'
+            }
+        }
+    ]
+);
+
+/**
+ * rcmSwitchUserSwitchToUserSimple
+ */
+angular.module('rcmSwitchUser').directive(
+    'rcmSwitchUserSwitchToUserHorizontal',
+    [
+        '$sce',
+        '$window',
+        function (
+            $sce,
+            $window
+        ) {
+            /**
+             *
+             * @param $scope
+             * @param element
+             * @param attrs
+             */
+            function link($scope, element, attrs) {
+
+            }
+
+            return {
+                link: link,
+                scope: {
+                    propLoading: '=loading', // Bool
+                    propIsSu: '=isSu', // Bool
+                    propImpersonatedUser: '=impersonatedUser', // {User}
+                    propSwitchBackMethod: '=switchBackMethod', // string ('auth' or 'basic')
+                    propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
+                    propSwitchToUserName: '=switchToUserName', // string
+                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+                    propSwitchBackLabel: '=switchBackLabel', // string
+                    propSuUserPassword: '=suUserPassword', // string
+                    propMessage: '=message', // {message},
+                    propOnSwitchTo: '=onSwitchTo', // function
+                    propOnSwitchBack: '=onSwitchBack', // function
+                },
+                template: '<style type="text/css">    .switch-user.horizontal label {        margin: .3em;    }</style><div class="switch-user horizontal">    <div class="row" ng-show="propMessage">        <div class="col-sm-12">            <div class="alert alert-warning" role="alert">                {{propMessage.value}}            </div>        </div>    </div>    <div class="row">        <div class="col-sm-4" ng-show="propIsSu">            <label>                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>                <span class="switch-user-info-content">Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</span>            </label>        </div>        <div ng-class="{\'col-sm-4\': propSwitchBackMethod == \'auth\', \'col-sm-4 col-md-offset-4\': propSwitchBackMethod != \'auth\'}">            <form ng-submit="propOnSwitchTo()">                <div class="input-group input-group-sm">                    <input class="form-control"                           id="switchToUserName"                           placeholder="Username"                           ng-model="propSwitchToUserName"                           type="text"                    >                    <span class="input-group-btn">                        <button class="btn btn-success"                                type="submit">                            {{propSwitchToUserNameLabel}}                        </button>                        <button class="btn btn-warning"                                ng-click="propOnSwitchBack()"                                ng-show="propSwitchBackMethod != \'auth\' && propIsSu"                                type="button">                            {{propSwitchBackLabel}}                        </button>                    </span>                </div>            </form>        </div>        <div class="col-sm-4" ng-show="propSwitchBackMethod == \'auth\' && propIsSu">            <form ng-submit="propOnSwitchBack()">                <div class="input-group input-group-sm">                    <input class="form-control"                           id="suUserPassword"                           placeholder="password"                           ng-model="propSuUserPassword"                           type="password"                    >                    <span class="input-group-btn">                        <button class="btn btn-warning"                                ng-show="propIsSu"                                type="submit">                            {{propSwitchBackLabel}}                        </button>                    </span>                </div>            </form>        </div>    </div></div>'
             }
         }
     ]
@@ -315,7 +402,6 @@ angular.module('rcmSwitchUser').service(
     ]
 );
 
-
 /**
  * {RcmSwitchUserAdminService}
  *
@@ -478,6 +564,13 @@ var RcmSwitchUserAdminService = function (
             }
         );
     };
+
+    self.scope = {
+        propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
+        propSwitchToUserName: '=switchToUserName', // string
+        propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+        propSwitchBackLabel: '=switchBackLabel' // string
+    }
 };
 
 /**
@@ -674,9 +767,19 @@ angular.module('rcmSwitchUser').directive(
                     propSwitchBackLabel: '=switchBackLabel' // string
                 },
                 template: '' +
-                '<div class="switch-user-inject" ng-if="isSu">' +
+                '<style type="text/css">' +
+                '    .switch-user-message .alert {' +
+                '        padding: 3px;' +
+                '    }' +
+                '    .switch-user-message .alert-caution {' +
+                '       background-color: #FFFFAA;' +
+                '       border-color: #FFFF00;' +
+                '       color: #999900;' +
+                '   }' +
+                '</style>' +
+                '<div class="switch-user-message" ng-if="isSu">' +
                 ' <div class="alert alert-caution" role="alert"> ' +
-                '  <div rcm-switch-user-admin ' +
+                '  <div rcm-switch-user-admin-horizontal ' +
                 '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
                 '       switch-to-user-name="propSwitchToUserName"' +
                 '       switch-to-user-name-label="propSwitchToUserNameLabel"' +
@@ -701,12 +804,7 @@ angular.module('rcmSwitchUser').directive(
         ) {
             return {
                 link: rcmSwitchUserAdminService.link,
-                scope: {
-                    propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
-                    propSwitchToUserName: '=switchToUserName', // string
-                    propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
-                    propSwitchBackLabel: '=switchBackLabel' // string
-                },
+                scope: rcmSwitchUserAdminService.scope,
                 template: '' +
                 '<rcm-switch-user-switch-to-user' +
                 ' loading="loading"' +
@@ -726,4 +824,88 @@ angular.module('rcmSwitchUser').directive(
             }
         }
     ]
+);
+
+/**
+ * rcmSwitchUserAdmin
+ */
+angular.module('rcmSwitchUser').directive(
+    'rcmSwitchUserAdminSimple',
+    [
+        'rcmSwitchUserAdminService',
+        function (
+            rcmSwitchUserAdminService
+        ) {
+            return {
+                link: rcmSwitchUserAdminService.link,
+                scope: rcmSwitchUserAdminService.scope,
+                template: '' +
+                '<rcm-switch-user-switch-to-user-simple' +
+                ' loading="loading"' +
+                ' is-su="isSu"' +
+                ' impersonated-user="impersonatedUser"' +
+                ' switch-back-method="switchBackMethod"' +
+                ' show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
+                ' switch-to-user-name="propSwitchToUserName"' +
+                ' switch-to-user-name-label="propSwitchToUserNameLabel"' +
+                ' switch-back-label="propSwitchBackLabel"' +
+                ' su-user-password="suUserPassword"' +
+                ' message="message"' +
+                ' on-switch-to="switchTo"' +
+                ' on-switch-back="switchBack"' +
+                '>' +
+                '</rcm-switch-user-switch-to-user-simple>'
+            }
+        }
+    ]
+);
+
+/**
+ * rcmSwitchUserAdmin
+ */
+angular.module('rcmSwitchUser').directive(
+    'rcmSwitchUserAdminHorizontal',
+    [
+        'rcmSwitchUserAdminService',
+        function (
+            rcmSwitchUserAdminService
+        ) {
+            return {
+                link: rcmSwitchUserAdminService.link,
+                scope: rcmSwitchUserAdminService.scope,
+                template: '' +
+                '<rcm-switch-user-switch-to-user-horizontal' +
+                ' loading="loading"' +
+                ' is-su="isSu"' +
+                ' impersonated-user="impersonatedUser"' +
+                ' switch-back-method="switchBackMethod"' +
+                ' show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
+                ' switch-to-user-name="propSwitchToUserName"' +
+                ' switch-to-user-name-label="propSwitchToUserNameLabel"' +
+                ' switch-back-label="propSwitchBackLabel"' +
+                ' su-user-password="suUserPassword"' +
+                ' message="message"' +
+                ' on-switch-to="switchTo"' +
+                ' on-switch-back="switchBack"' +
+                '>' +
+                '</rcm-switch-user-switch-to-user-horizontal>'
+            }
+        }
+    ]
+);
+
+/**
+ * rcmSwitchUserSwitchToUser
+ */
+angular.module('rcmSwitchUser').directive(
+    'rcmSwitchUserTooltip',
+    function () {
+        return {
+            scope: {
+                propInfoContent: '=content',
+                propShow: '=show',
+            },
+            template: '<div class="switch-user-tooltip alert alert-info" ng-show="propShow" role="alert">    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>    <span class="switch-user-info-content">{{propInfoContent}}</span></div>'
+        }
+    }
 );
