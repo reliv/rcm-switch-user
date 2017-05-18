@@ -79,9 +79,11 @@ return [
             'tooltip' => 'Switch User Admin options',
             'icon' => '',
             'defaultInstanceConfig' => [
-                'showSwitchToUserNameField' => true,
-                'switchToUserNameLabel' => 'Switch to User',
-                'switchBackLabel' => 'End Impersonation',
+                'showSwitchToUserNameField' => 'true',
+                'switchToUserNamePlaceholder' => 'Username',
+                'switchToUserNameButtonLabel' => 'Switch to User',
+                'switchBackButtonLabel' => 'End Impersonation',
+                'switchUserInfoContentPrefix' => 'Impersonating:'
             ],
             'canCache' => false
         ],
