@@ -2,7 +2,7 @@
  * rcmSwitchUserAdmin
  */
 angular.module('rcmSwitchUser').directive(
-    'rcmSwitchUserAdmin',
+    'rcmSwitchUserAdminHorizontal',
     [
         'rcmSwitchUserAdminService',
         function (
@@ -12,7 +12,7 @@ angular.module('rcmSwitchUser').directive(
                 link: rcmSwitchUserAdminService.link,
                 scope: rcmSwitchUserAdminService.scope,
                 template: '' +
-                '<rcm-switch-user-switch-to-user' +
+                '<rcm-switch-user-switch-to-user-horizontal' +
                 ' loading="loading"' +
                 ' is-su="isSu"' +
                 ' impersonated-user="impersonatedUser"' +
@@ -26,7 +26,7 @@ angular.module('rcmSwitchUser').directive(
                 ' on-switch-to="switchTo"' +
                 ' on-switch-back="switchBack"' +
                 '>' +
-                '</rcm-switch-user-switch-to-user>'
+                '</rcm-switch-user-switch-to-user-horizontal>'
             }
         }
     ]

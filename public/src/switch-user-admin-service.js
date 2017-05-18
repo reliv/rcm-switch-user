@@ -1,4 +1,3 @@
-
 /**
  * {RcmSwitchUserAdminService}
  *
@@ -161,6 +160,13 @@ var RcmSwitchUserAdminService = function (
             }
         );
     };
+
+    self.scope = {
+        propShowSwitchToUserNameField: '=showSwitchToUserNameField', // bool
+        propSwitchToUserName: '=switchToUserName', // string
+        propSwitchToUserNameLabel: '=switchToUserNameLabel', // string
+        propSwitchBackLabel: '=switchBackLabel' // string
+    }
 };
 
 /**

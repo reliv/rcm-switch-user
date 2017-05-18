@@ -1,8 +1,8 @@
 /**
- * rcmSwitchUserSwitchToUser
+ * rcmSwitchUserSwitchToUserSimple
  */
 angular.module('rcmSwitchUser').directive(
-    'rcmSwitchUserSwitchToUser',
+    'rcmSwitchUserSwitchToUserSimple',
     [
         '$sce',
         '$window',
@@ -36,7 +36,7 @@ angular.module('rcmSwitchUser').directive(
                     propOnSwitchTo: '=onSwitchTo', // function
                     propOnSwitchBack: '=onSwitchBack', // function
                 },
-                template: '<%= inlineTemplate("src/switch-to-user-directive.html") %>'
+                template: '<%= inlineTemplate("src/switch-to-user-directive-simple.html") %>'
             }
         }
     ]

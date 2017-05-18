@@ -3,11 +3,16 @@ module.exports = function (grunt) {
     var files = [
         'src/switch-user-module.js',
         'src/switch-to-user-directive.js',
+        'src/switch-to-user-directive-simple.js',
+        'src/switch-to-user-directive-horizontal.js',
         'src/switch-user-service.js',
         'src/switch-user-admin-service.js',
         'src/switch-user-message-inject.js',
         'src/switch-user-message.js',
-        'src/switch-user-admin.js'
+        'src/switch-user-admin.js',
+        'src/switch-user-admin-simple.js',
+        'src/switch-user-admin-horizontal.js',
+        'src/tooltip-directive.js'
     ];
 
     grunt.initConfig(

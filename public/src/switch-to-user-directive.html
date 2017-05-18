@@ -1,22 +1,10 @@
 <style type="text/css">
-    .switch-user button,
-    .switch-user label,
-    .switch-user p {
+    .switch-user.default label,
+    .switch-user.default p {
         margin: 5px 0px 5px 0px;
     }
-
-    .switch-user-inject .alert {
-        padding: 3px;
-    }
-
-    .switch-user-inject .alert-caution {
-        background-color: #FFFFAA;
-        border-color: #FFFF00;
-        color: #999900;
-    }
-
 </style>
-<div class="switch-user container-fluid" ng-hide="propLoading">
+<div class="switch-user default container-fluid" ng-hide="propLoading">
     <div class="row form-inline">
         <div class="col-md-12" ng-show="propMessage">
             <div class="alert alert-warning" role="alert">
@@ -24,7 +12,9 @@
             </div>
         </div>
         <div class="col-md-3" ng-show="propIsSu">
-            <label>Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}</label>
+            <label class="switch-user-info-content">
+                Impersonating: {{propImpersonatedUser.id}} {{propImpersonatedUser.username}}
+            </label>
         </div>
         <div class="col-md-4" ng-show="propShowSwitchToUserNameField">
             <form ng-submit="propOnSwitchTo()">
@@ -44,7 +34,7 @@
                        id="suUserPassword"
                        placeholder="password"
                        ng-model="propSuUserPassword"
-                       ng-show="switchBackMethod == 'auth'"
+                       ng-show="propSwitchBackMethod == 'auth'"
                        type="password"/>
                 <button class="btn btn-primary btn-sm"
                         type="submit">{{propSwitchBackLabel}}
