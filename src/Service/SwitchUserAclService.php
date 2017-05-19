@@ -49,7 +49,6 @@ class SwitchUserAclService
      */
     public function getAclUser($user)
     {
-
         if (empty($user)) {
             return null;
         }
