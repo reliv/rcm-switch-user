@@ -48,6 +48,13 @@ angular.module('rcmSwitchUser').directive(
                 },
                 template: '' +
                 '<style type="text/css">' +
+                '    .switch-user-message.real {' +
+                '       position: fixed;' +
+                '       z-index: 9999;' +
+                '    }' +
+                '    .switch-user-message.placeholder {' +
+                '       visibility: hidden' +
+                '    }' +
                 '    .switch-user-message .alert {' +
                 '        padding: 3px;' +
                 '    }' +
@@ -57,7 +64,8 @@ angular.module('rcmSwitchUser').directive(
                 '       color: #999900;' +
                 '   }' +
                 '</style>' +
-                '<div class="switch-user-message" ng-if="isSu">' +
+                '<div>' +
+                '<div class="switch-user-message real" ng-if="isSu">' +
                 ' <div class="alert alert-caution" role="alert"> ' +
                 '  <div rcm-switch-user-admin-horizontal ' +
                 '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
@@ -68,6 +76,19 @@ angular.module('rcmSwitchUser').directive(
                 '       switch-user-info-content-prefix="propSwitchUserInfoContentPrefix"' +
                 '  ></div> ' +
                 ' </div> ' +
+                '</div>' +
+                '<div class="switch-user-message placeholder" ng-if="isSu">' +
+                ' <div class="alert alert-caution" role="alert"> ' +
+                '  <div rcm-switch-user-admin-horizontal ' +
+                '       show-switch-to-user-name-field="propShowSwitchToUserNameField"' +
+                '       switch-to-user-name="propSwitchToUserName"' +
+                '       switch-to-user-name-placeholder="propSwitchToUserNamePlaceholder"' +
+                '       switch-to-user-name-button-label="propSwitchToUserNameButtonLabel"' +
+                '       switch-back-button-label="propSwitchBackButtonLabel"' +
+                '       switch-user-info-content-prefix="propSwitchUserInfoContentPrefix"' +
+                '  ></div> ' +
+                ' </div> ' +
+                '</div>' +
                 '</div>'
             }
         }
