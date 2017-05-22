@@ -50,7 +50,7 @@ angular.module('rcmSwitchUser').directive(
                 '<style type="text/css">' +
                 '    .switch-user-message.real {' +
                 '       position: fixed;' +
-                '       z-index: 9999;' +
+                '       z-index: 1001;' +
                 '    }' +
                 '    .switch-user-message.placeholder {' +
                 '       visibility: hidden' +
