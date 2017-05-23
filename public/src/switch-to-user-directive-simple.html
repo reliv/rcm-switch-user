@@ -1,4 +1,10 @@
-<div class="switch-user">
+<style type="text/css">
+    /* show full borders */
+    .switch-user.simple .input-group-btn button {
+        margin-right: 1px;
+    }
+</style>
+<div class="switch-user simple">
     <div class="row" ng-show="propMessage">
         <div class="col-sm-12">
             <div class="alert alert-warning" role="alert">
@@ -23,13 +29,13 @@
                         </button>
                         <button class="btn btn-warning"
                                 ng-click="propOnSwitchBack()"
-                                ng-show="propSwitchBackMethod != 'auth' && propIsSu"
+                                ng-if="propSwitchBackMethod != 'auth' && propIsSu"
                                 type="button">
                             {{propSwitchBackButtonLabel}}
                         </button>
                         <button class="btn btn-default"
-                                ng-click="showImpersonatorDetails = !showImpersonatorDetails"
-                                ng-show="propSwitchBackMethod != 'auth' && propIsSu"
+                                ng-click="toggleImpersonatorDetails()"
+                                ng-if="propSwitchBackMethod != 'auth' && propIsSu"
                                 type="button">
                             <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                         </button>

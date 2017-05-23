@@ -17,7 +17,12 @@ angular.module('rcmSwitchUser').directive(
              * @param attrs
              */
             function link($scope, element, attrs) {
+                $scope.showImpersonatorDetails = false;
 
+                $scope.toggleImpersonatorDetails = function()
+                {
+                    $scope.showImpersonatorDetails = !$scope.showImpersonatorDetails;
+                }
             }
 
             return {
