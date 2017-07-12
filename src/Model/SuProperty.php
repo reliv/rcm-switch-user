@@ -41,7 +41,7 @@ class SuProperty extends AbstractApiModel
     /**
      * getUserId
      *
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {

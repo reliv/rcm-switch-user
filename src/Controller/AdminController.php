@@ -28,7 +28,7 @@ class AdminController extends AbstractActionController
     protected function getRcmUserService()
     {
         return $this->getServiceLocator()->get(
-            'RcmUser\Service\RcmUserService'
+            \RcmUser\Service\RcmUserService::class
         );
     }
 
@@ -40,7 +40,7 @@ class AdminController extends AbstractActionController
     protected function getSwitchUserService()
     {
         return $this->getServiceLocator()->get(
-            'Rcm\SwitchUser\Service\SwitchUserService'
+            \Rcm\SwitchUser\Service\SwitchUserService::class
         );
     }
 
@@ -52,7 +52,7 @@ class AdminController extends AbstractActionController
     protected function getSwitchUserAclService()
     {
         return $this->getServiceLocator()->get(
-            'Rcm\SwitchUser\Service\SwitchUserAclService'
+            \Rcm\SwitchUser\Service\SwitchUserAclService::class
         );
     }
 

@@ -137,7 +137,7 @@ class SwitchUserAclService
         return $this->rcmUserService->isUserAllowed(
             $resourceId,
             $privilege,
-            $providerId = null,
+            $providerId,
             $user
         );
     }
