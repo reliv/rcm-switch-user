@@ -58,6 +58,9 @@ class RpcSuController extends BaseApiController
      */
     public function create($data)
     {
+        // Note: we can only ever check the current user for security reasons
+        // If an SU user could keep switching,
+        // there would be no way to know the original user
         $currentUser = $this->getRcmUserService()->getCurrentUser();
 
         if (!$this->isAllowed($currentUser)) {
