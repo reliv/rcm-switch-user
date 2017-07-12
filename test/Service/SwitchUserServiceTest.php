@@ -50,7 +50,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var \RcmUser\Service\RcmUserService $this->rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
-            'RcmUser\Service\RcmUserService'
+            \RcmUser\Service\RcmUserService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -107,7 +107,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var SwitchUserLogService switchUserLogService */
         $this->switchUserLogService = $this->getMockBuilder(
-            'Rcm\SwitchUser\Service\SwitchUserLogService'
+            \Rcm\SwitchUser\Service\SwitchUserLogService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -150,7 +150,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var \RcmUser\Service\RcmUserService $this->rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
-            'RcmUser\Service\RcmUserService'
+            \RcmUser\Service\RcmUserService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -207,7 +207,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var SwitchUserLogService switchUserLogService */
         $this->switchUserLogService = $this->getMockBuilder(
-            'Rcm\SwitchUser\Service\SwitchUserLogService'
+            \Rcm\SwitchUser\Service\SwitchUserLogService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -251,7 +251,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
-            'RcmUser\Service\RcmUserService'
+            \RcmUser\Service\RcmUserService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -316,7 +316,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var SwitchUserLogService switchUserLogService */
         $this->switchUserLogService = $this->getMockBuilder(
-            'Rcm\SwitchUser\Service\SwitchUserLogService'
+            \Rcm\SwitchUser\Service\SwitchUserLogService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -356,7 +356,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
-            'RcmUser\Service\RcmUserService'
+            \RcmUser\Service\RcmUserService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -419,7 +419,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var SwitchUserLogService switchUserLogService */
         $this->switchUserLogService = $this->getMockBuilder(
-            'Rcm\SwitchUser\Service\SwitchUserLogService'
+            \Rcm\SwitchUser\Service\SwitchUserLogService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -460,7 +460,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var \RcmUser\Service\RcmUserService $rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
-            'RcmUser\Service\RcmUserService'
+            \RcmUser\Service\RcmUserService::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -522,7 +522,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         /** @var SwitchUserLogService switchUserLogService */
         $this->switchUserLogService = $this->getMockBuilder(
-            'Rcm\SwitchUser\Service\SwitchUserLogService'
+            \Rcm\SwitchUser\Service\SwitchUserLogService::class
         )
             ->disableOriginalConstructor()
             ->getMock();

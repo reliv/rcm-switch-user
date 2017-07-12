@@ -21,19 +21,19 @@ return [
     /* CONTROLLERS */
     'controllers' => [
         'invokables' => [
-            'Rcm\SwitchUser\ApiController\RpcSuController'
-            => 'Rcm\SwitchUser\ApiController\RpcSuController',
-            'Rcm\SwitchUser\ApiController\RpcSwitchBackController'
-            => 'Rcm\SwitchUser\ApiController\RpcSwitchBackController',
-            'Rcm\SwitchUser\Controller\AdminController'
-            => 'Rcm\SwitchUser\Controller\AdminController',
+            \Rcm\SwitchUser\ApiController\RpcSuController::class
+            => \Rcm\SwitchUser\ApiController\RpcSuController::class,
+            \Rcm\SwitchUser\ApiController\RpcSwitchBackController::class
+            => \Rcm\SwitchUser\ApiController\RpcSwitchBackController::class,
+            \Rcm\SwitchUser\Controller\AdminController::class
+            => \Rcm\SwitchUser\Controller\AdminController::class,
         ],
     ],
     /* DOCTRINE */
     'doctrine' => [
         'driver' => [
             'Rcm\SwitchUser' => [
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
                 'cache' => 'array',
                 'paths' => [
                     __DIR__ . '/../src/Entity'
@@ -49,8 +49,8 @@ return [
     /* Rcm\SwitchUser Configuration */
     'Rcm\\SwitchUser' => [
         'restrictions' => [
-            'Rcm\SwitchUser\Restriction\AclRestriction',
-            'Rcm\SwitchUser\Restriction\SuUserRestriction',
+            \Rcm\SwitchUser\Restriction\AclRestriction::class,
+            \Rcm\SwitchUser\Restriction\SuUserRestriction::class,
         ],
         'acl' => [
             'resourceId' => 'switchuser',
@@ -67,8 +67,8 @@ return [
          * ['{switcherMethod}' => '{ServiceName}']
          */
         'switcherServices' => [
-            'basic' => 'Rcm\SwitchUser\Switcher\BasicSwitcher',
-            'auth' => 'Rcm\SwitchUser\Switcher\AuthSwitcher',
+            'basic' => \Rcm\SwitchUser\Switcher\BasicSwitcher::class,
+            'auth' => \Rcm\SwitchUser\Switcher\AuthSwitcher::class,
         ]
     ],
     /* Plugin Config */
@@ -114,7 +114,7 @@ return [
                 'options' => [
                     'route' => '/api/rpc/switch-user[/:id]',
                     'defaults' => [
-                        'controller' => 'Rcm\SwitchUser\ApiController\RpcSuController',
+                        'controller' => \Rcm\SwitchUser\ApiController\RpcSuController::class,
                     ]
                 ]
             ],
@@ -123,7 +123,7 @@ return [
                 'options' => [
                     'route' => '/api/rpc/switch-user-back[/:id]',
                     'defaults' => [
-                        'controller' => 'Rcm\SwitchUser\ApiController\RpcSwitchBackController',
+                        'controller' => \Rcm\SwitchUser\ApiController\RpcSwitchBackController::class,
                     ]
                 ]
             ],
@@ -132,7 +132,7 @@ return [
                 'options' => [
                     'route' => '/admin/switch-user',
                     'defaults' => [
-                        'controller' => 'Rcm\SwitchUser\Controller\AdminController',
+                        'controller' => \Rcm\SwitchUser\Controller\AdminController::class,
                         'action' => 'index',
                     ]
                 ]
@@ -144,60 +144,61 @@ return [
         'config_factories' => [
             \Rcm\SwitchUser\Middleware\RcmSwitchUserAcl::class => [
                 'arguments' => [
-                    'Rcm\SwitchUser\Service\SwitchUserAclService',
+                    \Rcm\SwitchUser\Service\SwitchUserAclService::class,
                 ]
             ],
-            'Rcm\SwitchUser\Restriction\AclRestriction' => [
+            \Rcm\SwitchUser\Restriction\AclRestriction::class => [
                 'arguments' => [
                     'config',
-                    'RcmUser\Service\RcmUserService',
+                    \RcmUser\Service\RcmUserService::class,
                 ]
             ],
-            'Rcm\SwitchUser\Restriction\SuUserRestriction' => [
+            \Rcm\SwitchUser\Restriction\SuUserRestriction::class => [
                 'arguments' => [
                     'config',
-                    'RcmUser\Service\RcmUserService',
+                    \RcmUser\Service\RcmUserService::class,
                 ]
             ],
             /* Services */
-            'Rcm\SwitchUser\Service\SwitchUserAclService' => [
+            \Rcm\SwitchUser\Service\SwitchUserAclService::class => [
                 'arguments' => [
                     'config',
-                    'RcmUser\Service\RcmUserService',
-                    'Rcm\SwitchUser\Service\SwitchUserService',
+                    \RcmUser\Service\RcmUserService::class,
+                    \Rcm\SwitchUser\Service\SwitchUserService::class,
                 ]
             ],
-            'Rcm\SwitchUser\Service\SwitchUserLogService' => [
+            \Rcm\SwitchUser\Service\SwitchUserLogService::class => [
                 'arguments' => [
                     'Doctrine\ORM\EntityManager',
                 ]
             ],
-            'Rcm\SwitchUser\Service\SwitchUserService' => [
+            \Rcm\SwitchUser\Service\SwitchUserService::class => [
                 'arguments' => [
                     'config',
-                    'RcmUser\Service\RcmUserService',
-                    'Rcm\SwitchUser\Restriction',
-                    'Rcm\SwitchUser\Switcher',
-                    'Rcm\SwitchUser\Service\SwitchUserLogService',
+                    \RcmUser\Service\RcmUserService::class,
+                    \Rcm\SwitchUser\Restriction\Restriction::class,
+                    \Rcm\SwitchUser\Switcher\Switcher::class,
+                    \Rcm\SwitchUser\Service\SwitchUserLogService::class,
                 ]
             ],
             /* Switchers */
-            'Rcm\SwitchUser\Switcher\BasicSwitcher' => [
+            \Rcm\SwitchUser\Switcher\BasicSwitcher::class => [
                 'arguments' => [
-                    'RcmUser\Service\RcmUserService',
-                    'Rcm\SwitchUser\Service\SwitchUserLogService',
+                    \RcmUser\Service\RcmUserService::class,
+                    \Rcm\SwitchUser\Service\SwitchUserLogService::class,
                 ]
             ],
-            'Rcm\SwitchUser\Switcher\AuthSwitcher' => [
+            \Rcm\SwitchUser\Switcher\AuthSwitcher::class => [
                 'arguments' => [
-                    'RcmUser\Service\RcmUserService',
-                    'Rcm\SwitchUser\Service\SwitchUserLogService',
+                    \RcmUser\Service\RcmUserService::class,
+                    \Rcm\SwitchUser\Service\SwitchUserLogService::class,
                 ]
             ],
         ],
         'factories' => [
-            'Rcm\SwitchUser\Switcher' => 'Rcm\SwitchUser\Factory\SwitcherServiceFactory',
-            'Rcm\SwitchUser\Restriction' => 'Rcm\SwitchUser\Factory\CompositeRestrictionFactory'
+            /* DEFAULT Switcher*/
+            \Rcm\SwitchUser\Switcher\Switcher::class => \Rcm\SwitchUser\Factory\SwitcherServiceFactory::class,
+            \Rcm\SwitchUser\Restriction\Restriction::class => \Rcm\SwitchUser\Factory\CompositeRestrictionFactory::class
         ],
     ],
     /* VIEW MANAGER*/

@@ -197,21 +197,23 @@ class SwitchUserService
     }
 
     /**
-     * getCurrentImpersonatorUser Get the admin user from the current user if SUed
+     * Get the admin (SU) user from the current user if SUed
+     *
+     * @param null $default
      *
      * @return null|User
      */
-    public function getCurrentImpersonatorUser()
+    public function getCurrentImpersonatorUser($default = null)
     {
         // Get current user
         $currentUser = $this->rcmUserService->getCurrentUser();
 
         if (empty($currentUser)) {
             // ERROR
-            return null;
+            return $default;
         }
 
-        return $this->getImpersonatorUser($currentUser);
+        return $this->getImpersonatorUser($currentUser, $default);
     }
 
     /**
@@ -221,21 +223,27 @@ class SwitchUserService
      *
      * @return mixed|null
      */
-    public function getImpersonatorUser(User $user)
+    /**
+     * @param User $user
+     * @param null $default
+     *
+     * @return User|null
+     */
+    public function getImpersonatorUser(User $user, $default = null)
     {
         /** @var SuProperty $suProperty */
         $suProperty = $user->getProperty(SuProperty::SU_PROPERTY);
 
         if (empty($suProperty)) {
             // ERROR
-            return null;
+            return $default;
         }
 
         $suUser = $suProperty->getUser();
 
         if (empty($suUser)) {
             // ERROR
-            return null;
+            return $default;
         }
 
         return $suUser;
