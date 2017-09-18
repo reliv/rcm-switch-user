@@ -24,7 +24,6 @@
     "php": ">=5.5",
     "zendframework/zendframework": "2.*",
     "doctrine/doctrine-orm-module": "0.* || 1.*",
-    "fxp/composer-asset-plugin": "^1",
     "reliv/zf-config-factories": "3.* || 4.*",
     "rwoverdijk/assetmanager": "1.*",
     "rcm/core": "^1.7.0",
