@@ -17,6 +17,9 @@
       "homepage": "https://github.com/reliv"
     }
   ],
+  "suggest":{
+    "bower-asset/rcm-loading": "0.*"
+  },
   "require": {
     "php": ">=5.5",
     "zendframework/zendframework": "2.*",
@@ -27,8 +30,7 @@
     "rcm/core": "^1.7.0",
     "rcm/core-js": "^1.0.0",
     "rcm/api-lib": "0.*",
-    "rcm/user": "1.*",
-    "bower-asset/rcm-loading": "0.*"
+    "rcm/user": "1.*"
   },
   "autoload": {
     "psr-4": {
