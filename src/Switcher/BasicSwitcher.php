@@ -69,7 +69,7 @@ class BasicSwitcher implements Switcher
         $result = new Result();
 
         // Force login as $targetUser
-        $this->rcmUserService->getUserAuthService()->setIdentity($targetUser);
+        $this->rcmUserService->setIdentity($targetUser);
         // add SU property to target user
         $targetUser->setProperty(
             SuProperty::SU_PROPERTY,
@@ -107,7 +107,7 @@ class BasicSwitcher implements Switcher
         $result = new Result();
 
         // Force login as $suUser
-        $this->rcmUserService->getUserAuthService()->setIdentity($impersonatorUser);
+        $this->rcmUserService->setIdentity($impersonatorUser);
 
         // log action
         $this->logAction(
