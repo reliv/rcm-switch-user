@@ -29,7 +29,7 @@
     "rcm/core": "^1.7.0",
     "rcm/core-js": "^1.0.0",
     "rcm/api-lib": "0.*",
-    "rcm/user": "1.*"
+    "rcm/user": "~1.5"
   },
   "autoload": {
     "psr-4": {

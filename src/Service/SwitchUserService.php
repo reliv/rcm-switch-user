@@ -7,20 +7,10 @@ use Rcm\SwitchUser\Restriction\Restriction;
 use Rcm\SwitchUser\Result;
 use Rcm\SwitchUser\Switcher\Switcher;
 use RcmUser\Service\RcmUserService;
-use RcmUser\User\Entity\User;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * Class SwitchUserService
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class SwitchUserService
 {
@@ -85,7 +75,7 @@ class SwitchUserService
      *
      * @param $userName
      *
-     * @return null|User
+     * @return null|UserInterface
      */
     public function getUser($userName)
     {
@@ -95,12 +85,12 @@ class SwitchUserService
     /**
      * switchToUser
      *
-     * @param User  $targetUser
-     * @param array $options
+     * @param UserInterface $targetUser
+     * @param array         $options
      *
      * @return Result
      */
-    public function switchToUser(User $targetUser, $options = [])
+    public function switchToUser(UserInterface $targetUser, $options = [])
     {
         // Get current user
         $currentUser = $this->rcmUserService->getCurrentUser();
@@ -201,7 +191,7 @@ class SwitchUserService
      *
      * @param null $default
      *
-     * @return null|User
+     * @return null|UserInterface
      */
     public function getCurrentImpersonatorUser($default = null)
     {
@@ -219,17 +209,17 @@ class SwitchUserService
     /**
      * getImpersonatorUser Get the admin user from the user if SUed
      *
-     * @param User $user
+     * @param UserInterface $user
      *
      * @return mixed|null
      */
     /**
-     * @param User $user
-     * @param null $default
+     * @param UserInterface $user
+     * @param null          $default
      *
-     * @return User|null
+     * @return UserInterface|null
      */
-    public function getImpersonatorUser(User $user, $default = null)
+    public function getImpersonatorUser(UserInterface $user, $default = null)
     {
         /** @var SuProperty $suProperty */
         $suProperty = $user->getProperty(SuProperty::SU_PROPERTY);

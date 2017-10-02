@@ -33,7 +33,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function getUnit()
     {
-        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        /** @var \RcmUser\User\Entity\UserInterface $rcmUserMock */
         $this->rcmUserMock
             = $this->getMockBuilder('RcmUser\User\Entity\User')
             ->disableOriginalConstructor()
@@ -48,7 +48,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->rcmUSerAuthenticationServiceMock->method('setIdentity')
             ->will($this->returnValue(null));
 
-        /** @var \RcmUser\Service\RcmUserService $this->rcmUserServiceMock */
+        /** @var \RcmUser\Service\RcmUserService $this ->rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
             \RcmUser\Service\RcmUserService::class
         )
@@ -61,7 +61,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->rcmUserServiceMock->method('getUserAuthService')
             ->will($this->returnValue($this->rcmUSerAuthenticationServiceMock));
 
-        /** @var Result $this->restrictionResultMock */
+        /** @var Result $this ->restrictionResultMock */
         $this->restrictionResultMock = $this->getMockBuilder(
             'Rcm\SwitchUser\Restriction\Result'
         )
@@ -72,7 +72,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->restrictionResultMock->method('getMessage')
             ->will($this->returnValue(''));
 
-        /** @var \Rcm\SwitchUser\Restriction\Restriction $this->restrictionMock */
+        /** @var \Rcm\SwitchUser\Restriction\Restriction $this ->restrictionMock */
         $this->restrictionMock = $this->getMockBuilder(
             'Rcm\SwitchUser\Restriction\Restriction'
         )
@@ -90,7 +90,6 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $this->switcherResult->method('getMessage')
             ->will($this->returnValue(''));
-
 
         /** @var Switcher switcherMock */
         $this->switcherMock = $this->getMockBuilder(
@@ -130,7 +129,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function getUnitIsImpersonating()
     {
-        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        /** @var \RcmUser\User\Entity\UserInterface $rcmUserMock */
         $this->rcmUserMock
             = $this->getMockBuilder('RcmUser\User\Entity\User')
             ->disableOriginalConstructor()
@@ -148,7 +147,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->rcmUSerAuthenticationServiceMock->method('setIdentity')
             ->will($this->returnValue(null));
 
-        /** @var \RcmUser\Service\RcmUserService $this->rcmUserServiceMock */
+        /** @var \RcmUser\Service\RcmUserService $this ->rcmUserServiceMock */
         $this->rcmUserServiceMock = $this->getMockBuilder(
             \RcmUser\Service\RcmUserService::class
         )
@@ -161,7 +160,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->rcmUserServiceMock->method('getUserAuthService')
             ->will($this->returnValue($this->rcmUSerAuthenticationServiceMock));
 
-        /** @var Result $this->restrictionResultMock */
+        /** @var Result $this ->restrictionResultMock */
         $this->restrictionResultMock = $this->getMockBuilder(
             'Rcm\SwitchUser\Restriction\Result'
         )
@@ -172,7 +171,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->restrictionResultMock->method('getMessage')
             ->will($this->returnValue(''));
 
-        /** @var \Rcm\SwitchUser\Restriction\Restriction $this->restrictionMock */
+        /** @var \Rcm\SwitchUser\Restriction\Restriction $this ->restrictionMock */
         $this->restrictionMock = $this->getMockBuilder(
             'Rcm\SwitchUser\Restriction\Restriction'
         )
@@ -190,7 +189,6 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $this->switcherResult->method('getMessage')
             ->will($this->returnValue(''));
-
 
         /** @var Switcher switcherMock */
         $this->switcherMock = $this->getMockBuilder(
@@ -234,7 +232,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
 
         $config['Rcm\\SwitchUser']['switchBackMethod'] = 'basic';
 
-        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        /** @var \RcmUser\User\Entity\UserInterface $rcmUserMock */
         $this->rcmUserMock
             = $this->getMockBuilder('RcmUser\User\Entity\User')
             ->disableOriginalConstructor()
@@ -288,8 +286,6 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
         $this->restrictionMock->method('allowed')
             ->will($this->returnValue($this->restrictionResultMock));
 
-
-
         $this->switcherResult = $this->getMockBuilder(
             'Rcm\SwitchUser\Result'
         )
@@ -299,7 +295,6 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $this->switcherResult->method('getMessage')
             ->will($this->returnValue(''));
-
 
         /** @var Switcher switcherMock */
         $this->switcherMock = $this->getMockBuilder(
@@ -339,7 +334,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function getUnitNoCurrentUser()
     {
-        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        /** @var \RcmUser\User\Entity\UserInterface $rcmUserMock */
         $this->rcmUserMock
             = $this->getMockBuilder('RcmUser\User\Entity\User')
             ->disableOriginalConstructor()
@@ -402,7 +397,6 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $this->switcherResult->method('getMessage')
             ->will($this->returnValue(''));
-
 
         /** @var Switcher switcherMock */
         $this->switcherMock = $this->getMockBuilder(
@@ -443,7 +437,7 @@ class SwitchUserServiceTest extends \PHPUnit_Framework_TestCase
     public function getUnitResticted()
     {
 
-        /** @var \RcmUser\User\Entity\User $rcmUserMock */
+        /** @var \RcmUser\User\Entity\UserInterface $rcmUserMock */
         $this->rcmUserMock
             = $this->getMockBuilder('RcmUser\User\Entity\User')
             ->disableOriginalConstructor()

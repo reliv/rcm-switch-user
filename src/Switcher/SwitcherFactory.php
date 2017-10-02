@@ -1,6 +1,6 @@
 <?php
 
-namespace Rcm\SwitchUser\Factory;
+namespace Rcm\SwitchUser\Switcher;
 
 use Interop\Container\ContainerInterface;
 use Rcm\SwitchUser\Switcher\Switcher;
@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class SwitcherServiceFactory
+class SwitcherFactory
 {
     /**
      * @param ContainerInterface|ServiceLocatorInterface $container

@@ -2,23 +2,12 @@
 
 namespace Rcm\SwitchUser\ApiController;
 
-use RcmUser\User\Entity\User;
+use RcmUser\User\Entity\UserInterface;
 use Reliv\RcmApiLib\Model\ApiMessage;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
-use Reliv\RcmApiLib\Model\HttpStatusCodeApiMessage;
 
 /**
- * Class RpcSuController
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Reliv\Conference\ApiController
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class RpcSuController extends BaseApiController
 {
@@ -107,8 +96,8 @@ class RpcSuController extends BaseApiController
     /**
      * buildResult
      *
-     * @param bool      $isSu
-     * @param User|null $impersonatedUser
+     * @param bool               $isSu
+     * @param UserInterface|null $impersonatedUser
      *
      * @return mixed
      */

@@ -1,9 +1,8 @@
 <?php
 
-namespace Rcm\SwitchUser\Factory;
+namespace Rcm\SwitchUser\Restriction;
 
 use Interop\Container\ContainerInterface;
-use Rcm\SwitchUser\Restriction\CompositeRestriction;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**

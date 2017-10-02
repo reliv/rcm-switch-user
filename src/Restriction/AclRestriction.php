@@ -3,20 +3,10 @@
 namespace Rcm\SwitchUser\Restriction;
 
 use RcmUser\Service\RcmUserService;
-use RcmUser\User\Entity\User;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * class AclRestriction
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class AclRestriction implements Restriction
 {
@@ -43,12 +33,12 @@ class AclRestriction implements Restriction
     /**
      * allowed
      *
-     * @param User $adminUser
-     * @param User $targetUser
+     * @param UserInterface $adminUser
+     * @param UserInterface $targetUser
      *
      * @return bool
      */
-    public function allowed(User $adminUser, User $targetUser)
+    public function allowed(UserInterface $adminUser, UserInterface $targetUser)
     {
         $isAllowed = $this->rcmUserService->isUserAllowed(
             $this->aclConfig['resourceId'],
