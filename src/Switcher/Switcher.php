@@ -3,20 +3,10 @@
 namespace Rcm\SwitchUser\Switcher;
 
 use Rcm\SwitchUser\Result;
-use RcmUser\User\Entity\User;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * Class Switcher
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 interface Switcher
 {
@@ -30,20 +20,20 @@ interface Switcher
     /**
      * switchTo
      *
-     * @param User  $targetUser
-     * @param array $options
+     * @param UserInterface $targetUser
+     * @param array         $options
      *
      * @return Result
      */
-    public function switchTo(User $targetUser, $options = []);
+    public function switchTo(UserInterface $targetUser, $options = []);
 
     /**
      * switchBack
      *
-     * @param User  $impersonatorUser
-     * @param array $options
+     * @param UserInterface $impersonatorUser
+     * @param array         $options
      *
      * @return Result
      */
-    public function switchBack(User $impersonatorUser, $options = []);
+    public function switchBack(UserInterface $impersonatorUser, $options = []);
 }

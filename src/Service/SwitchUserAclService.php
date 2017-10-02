@@ -2,7 +2,10 @@
 
 namespace Rcm\SwitchUser\Service;
 
-use RcmUser\Service\RcmUserService;
+use RcmUser\Api\Acl\IsUserAllowed;
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\GetPsrRequest;
+use RcmUser\User\Entity\UserInterface;
 
 /**
  * @author James Jervis - https://github.com/jerv13
@@ -13,10 +16,16 @@ class SwitchUserAclService
      * @var array
      */
     protected $aclConfig;
+
     /**
-     * @var RcmUserService
+     * @var IsUserAllowed
      */
-    protected $rcmUserService;
+    protected $isUserAllowed;
+
+    /**
+     * @var GetIdentity
+     */
+    protected $getIdentity;
 
     /**
      * @var SwitchUserService
@@ -24,19 +33,20 @@ class SwitchUserAclService
     protected $switchUserService;
 
     /**
-     * SwitchUserAclService constructor.
-     *
-     * @param  array            $config
-     * @param RcmUserService    $rcmUserService
+     * @param array             $config
+     * @param IsUserAllowed     $isUserAllowed
+     * @param GetIdentity       $getIdentity
      * @param SwitchUserService $switchUserService
      */
     public function __construct(
         $config,
-        RcmUserService $rcmUserService,
+        IsUserAllowed $isUserAllowed,
+        GetIdentity $getIdentity,
         SwitchUserService $switchUserService
     ) {
         $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
-        $this->rcmUserService = $rcmUserService;
+        $this->isUserAllowed = $isUserAllowed;
+        $this->getIdentity = $getIdentity;
         $this->switchUserService = $switchUserService;
     }
 
@@ -66,10 +76,10 @@ class SwitchUserAclService
     /**
      * isAllowed
      *
-     * @param $resourceId
-     * @param $privilege
-     * @param $providerId
-     * @param $user
+     * @param string        $resourceId
+     * @param string        $privilege
+     * @param null          $providerId // @deprecated
+     * @param UserInterface $user
      *
      * @return bool|mixed
      */
@@ -81,11 +91,10 @@ class SwitchUserAclService
             return false;
         }
 
-        return $this->rcmUserService->isUserAllowed(
+        return $this->isUserAllowed->__invoke(
+            $suUser,
             $resourceId,
-            $privilege,
-            $providerId,
-            $suUser
+            $privilege
         );
     }
 
@@ -100,7 +109,9 @@ class SwitchUserAclService
      */
     public function currentUserIsAllowed($resourceId, $privilege, $providerId = null)
     {
-        $user = $this->rcmUserService->getCurrentUser();
+        $psrRequest = GetPsrRequest::class;
+
+        $user = $this->getIdentity->__invoke($psrRequest);
 
         $adminUser = $this->getAclUser($user);
 
@@ -115,10 +126,10 @@ class SwitchUserAclService
     /**
      * isImpersonatorUserAllowed
      *
-     * @param $resourceId
-     * @param $privilege
-     * @param $providerId
-     * @param $user
+     * @param string        $resourceId
+     * @param string        $privilege
+     * @param null          $providerId // @deprecated
+     * @param UserInterface $user
      *
      * @return bool|mixed
      */
@@ -134,11 +145,10 @@ class SwitchUserAclService
             return false;
         }
 
-        return $this->rcmUserService->isUserAllowed(
+        return $this->isUserAllowed->__invoke(
+            $user,
             $resourceId,
-            $privilege,
-            $providerId,
-            $user
+            $privilege
         );
     }
 
@@ -156,7 +166,9 @@ class SwitchUserAclService
         $privilege,
         $providerId = null
     ) {
-        $user = $this->rcmUserService->getCurrentUser();
+        $psrRequest = GetPsrRequest::class;
+
+        $user = $this->getIdentity->__invoke($psrRequest);
 
         return $this->isImpersonatorUserAllowed(
             $resourceId,

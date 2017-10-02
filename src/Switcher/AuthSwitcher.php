@@ -3,23 +3,19 @@
 namespace Rcm\SwitchUser\Switcher;
 
 use Rcm\SwitchUser\Result;
-use RcmUser\User\Entity\User;
+use Rcm\SwitchUser\Service\SwitchUserLogService;
+use RcmUser\Api\Authentication\Authenticate;
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\Authentication\SetIdentity;
+use RcmUser\Api\GetPsrRequest;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * Class AuthSwitcher
  * More secure way to switch user back
  *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Rcm\SwitchUser\Switcher
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
-class AuthSwitcher extends BasicSwitcher
+class AuthSwitcher extends SwitcherAbstract implements Switcher
 {
     /**
      * @var string
@@ -27,29 +23,66 @@ class AuthSwitcher extends BasicSwitcher
     protected $name = 'auth';
 
     /**
+     * @var Authenticate
+     */
+    protected $authenticate;
+
+    /**
+     * @param SetIdentity          $setIdentity
+     * @param GetIdentity          $getIdentity
+     * @param SwitchUserLogService $switchUserLogService
+     * @param Authenticate         $authenticate
+     */
+    public function __construct(
+        SetIdentity $setIdentity,
+        GetIdentity $getIdentity,
+        SwitchUserLogService $switchUserLogService,
+        Authenticate $authenticate
+    ) {
+        $this->authenticate = $authenticate;
+        parent::__construct($setIdentity, $getIdentity, $switchUserLogService);
+    }
+
+    /**
+     * getName
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * switchBack
      *
-     * @param User  $impersonatorUser
-     * @param array $options
+     * @param UserInterface $impersonatorUser
+     * @param array         $options
      *
      * @return Result
      * @throws \Exception
      */
-    public function switchBack(User $impersonatorUser, $options = [])
+    public function switchBack(UserInterface $impersonatorUser, $options = [])
     {
         if (!isset($options['suUserPassword'])) {
             throw new \Exception('suUserPassword required for AuthSwitcher');
         }
         $suUserPassword = $options['suUserPassword'];
 
+        $psrRequest = GetPsrRequest::invoke();
+
         // Get current user
-        $currentUserId = $this->rcmUserService->getCurrentUser()->getId();
+        $currentUser = $this->getIdentity->__invoke($psrRequest);
+
+        $currentUserId = $currentUser->getId();
+
         $impersonatorUserId = $impersonatorUser->getId();
 
         $result = new Result();
 
         $impersonatorUser->setPassword($suUserPassword);
-        $authResult = $this->rcmUserService->authenticate($impersonatorUser);
+        $authResult = $this->authenticate->__invoke($psrRequest, $impersonatorUser);
+
         if (!$authResult->isValid()) {
             // ERROR
             // log action

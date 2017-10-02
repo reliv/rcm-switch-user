@@ -2,21 +2,11 @@
 
 namespace Rcm\SwitchUser\Restriction;
 
-use RcmUser\Service\RcmUserService;
-use RcmUser\User\Entity\User;
+use RcmUser\Api\Acl\IsUserAllowed;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * class SuUserRestriction
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class SuUserRestriction implements Restriction
 {
@@ -26,35 +16,34 @@ class SuUserRestriction implements Restriction
     protected $aclConfig;
 
     /**
-     * @var RcmUserService
+     * @var IsUserAllowed
      */
-    protected $rcmUserService;
+    protected $isUserAllowed;
 
     /**
-     * @param array          $config
-     * @param RcmUserService $rcmUserService
+     * @param               $config
+     * @param IsUserAllowed $isUserAllowed
      */
-    public function __construct($config, RcmUserService $rcmUserService)
+    public function __construct($config, IsUserAllowed $isUserAllowed)
     {
         $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
-        $this->rcmUserService = $rcmUserService;
+        $this->isUserAllowed = $isUserAllowed;
     }
 
     /**
      * allowed
      *
-     * @param User $adminUser
-     * @param User $targetUser
+     * @param UserInterface $adminUser
+     * @param UserInterface $targetUser
      *
-     * @return bool
+     * @return RestrictionResult
      */
-    public function allowed(User $adminUser, User $targetUser)
+    public function allowed(UserInterface $adminUser, UserInterface $targetUser)
     {
-        $isAllowed = $this->rcmUserService->isUserAllowed(
+        $isAllowed = $this->isUserAllowed->__invoke(
+            $targetUser,
             $this->aclConfig['resourceId'],
-            $this->aclConfig['privilege'],
-            $this->aclConfig['providerId'],
-            $targetUser
+            $this->aclConfig['privilege']
         );
 
         if ($isAllowed) {

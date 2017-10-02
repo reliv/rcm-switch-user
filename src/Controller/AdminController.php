@@ -2,33 +2,33 @@
 
 namespace Rcm\SwitchUser\Controller;
 
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\GetPsrRequest;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
- * Class AdminController
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Rcm\SwitchUser\AdminController
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright ${YEAR} Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class AdminController extends AbstractActionController
 {
     /**
-     * getRcmUserService
+     * @param null $default
      *
-     * @return \RcmUser\Service\RcmUserService
+     * @return null|\RcmUser\User\Entity\UserInterface
      */
-    protected function getRcmUserService()
+    protected function getCurrentUser($default = null)
     {
-        return $this->getServiceLocator()->get(
-            \RcmUser\Service\RcmUserService::class
+        /** @var GetIdentity $getIdentity */
+        $getIdentity = $this->getServiceLocator()->get(
+            GetIdentity::class
+        );
+
+        $psrRequest = GetPsrRequest::invoke();
+
+        return $getIdentity->__invoke(
+            $psrRequest,
+            $default
         );
     }
 
@@ -76,12 +76,11 @@ class AdminController extends AbstractActionController
     public function indexAction()
     {
         $switchUserService = $this->getSwitchUserService();
-        $rcmUserService = $this->getRcmUserService();
 
         $view = new ViewModel();
 
         $adminUser = $switchUserService->getCurrentImpersonatorUser();
-        $targetUser = $rcmUserService->getCurrentUser();
+        $targetUser = $this->getCurrentUser();
         $view->setVariable(
             'targetUser',
             $targetUser

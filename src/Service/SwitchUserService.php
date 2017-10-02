@@ -6,28 +6,31 @@ use Rcm\SwitchUser\Model\SuProperty;
 use Rcm\SwitchUser\Restriction\Restriction;
 use Rcm\SwitchUser\Result;
 use Rcm\SwitchUser\Switcher\Switcher;
-use RcmUser\Service\RcmUserService;
-use RcmUser\User\Entity\User;
+use RcmUser\Api\Acl\IsUserAllowed;
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\GetPsrRequest;
+use RcmUser\Api\User\GetUserByUsername;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * Class SwitchUserService
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class SwitchUserService
 {
     /**
-     * @var RcmUserService
+     * @var GetUserByUsername
      */
-    protected $rcmUserService;
+    protected $getUserByUsername;
+
+    /**
+     * @var GetIdentity
+     */
+    protected $getIdentity;
+
+    /**
+     * @var IsUserAllowed
+     */
+    protected $isUserAllowed;
 
     /**
      * @var Restriction
@@ -51,19 +54,24 @@ class SwitchUserService
 
     /**
      * @param array                $config
-     * @param RcmUserService       $rcmUserService
+     * @param GetUserByUsername    $getUserByUsername
+     * @param GetIdentity          $getIdentity
      * @param Restriction          $restriction
      * @param Switcher             $switcher
      * @param SwitchUserLogService $switchUserLogService
      */
     public function __construct(
         $config,
-        RcmUserService $rcmUserService,
+        GetUserByUsername $getUserByUsername,
+        GetIdentity $getIdentity,
+        IsUserAllowed $isUserAllowed,
         Restriction $restriction,
         Switcher $switcher,
         SwitchUserLogService $switchUserLogService
     ) {
-        $this->rcmUserService = $rcmUserService;
+        $this->getUserByUsername = $getUserByUsername;
+        $this->getIdentity = $getIdentity;
+        $this->isUserAllowed = $isUserAllowed;
         $this->restriction = $restriction;
         $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
         $this->switcher = $switcher;
@@ -85,25 +93,27 @@ class SwitchUserService
      *
      * @param $userName
      *
-     * @return null|User
+     * @return null|UserInterface
      */
     public function getUser($userName)
     {
-        return $this->rcmUserService->getUserByUsername($userName);
+        return $this->getUserByUsername->__invoke($userName);
     }
 
     /**
      * switchToUser
      *
-     * @param User  $targetUser
-     * @param array $options
+     * @param UserInterface $targetUser
+     * @param array         $options
      *
      * @return Result
      */
-    public function switchToUser(User $targetUser, $options = [])
+    public function switchToUser(UserInterface $targetUser, $options = [])
     {
+        $psrRequest = GetPsrRequest::invoke();
+
         // Get current user
-        $currentUser = $this->rcmUserService->getCurrentUser();
+        $currentUser = $this->getIdentity->__invoke($psrRequest);
 
         $result = new Result();
 
@@ -122,9 +132,9 @@ class SwitchUserService
         }
 
         // Run restrictions
-        $restictionResult = $this->restriction->allowed($currentUser, $targetUser);
+        $restrictionResult = $this->restriction->allowed($currentUser, $targetUser);
 
-        if (!$restictionResult->isAllowed()) {
+        if (!$restrictionResult->isAllowed()) {
             // log action
             $this->logAction(
                 $currentUser->getId(),
@@ -133,7 +143,7 @@ class SwitchUserService
                 false
             );
 
-            $result->setSuccess(false, $restictionResult->getMessage());
+            $result->setSuccess(false, $restrictionResult->getMessage());
 
             return $result;
         }
@@ -150,8 +160,10 @@ class SwitchUserService
      */
     public function switchBack($options = [])
     {
+        $psrRequest = GetPsrRequest::invoke();
+
         // Get current user
-        $targetUser = $this->rcmUserService->getCurrentUser();
+        $targetUser = $this->getIdentity->__invoke($psrRequest);
 
         $result = new Result();
 
@@ -201,12 +213,14 @@ class SwitchUserService
      *
      * @param null $default
      *
-     * @return null|User
+     * @return null|UserInterface
      */
     public function getCurrentImpersonatorUser($default = null)
     {
+        $psrRequest = GetPsrRequest::invoke();
+
         // Get current user
-        $currentUser = $this->rcmUserService->getCurrentUser();
+        $currentUser = $this->getIdentity->__invoke($psrRequest);
 
         if (empty($currentUser)) {
             // ERROR
@@ -219,17 +233,17 @@ class SwitchUserService
     /**
      * getImpersonatorUser Get the admin user from the user if SUed
      *
-     * @param User $user
+     * @param UserInterface $user
      *
      * @return mixed|null
      */
     /**
-     * @param User $user
-     * @param null $default
+     * @param UserInterface $user
+     * @param null          $default
      *
-     * @return User|null
+     * @return UserInterface|null
      */
-    public function getImpersonatorUser(User $user, $default = null)
+    public function getImpersonatorUser(UserInterface $user, $default = null)
     {
         /** @var SuProperty $suProperty */
         $suProperty = $user->getProperty(SuProperty::SU_PROPERTY);
@@ -267,11 +281,10 @@ class SwitchUserService
         }
         $aclConfig = $this->aclConfig;
 
-        return $this->rcmUserService->isUserAllowed(
+        return $this->isUserAllowed->__invoke(
+            $suUser,
             $aclConfig['resourceId'],
-            $aclConfig['privilege'],
-            $aclConfig['providerId'],
-            $suUser
+            $aclConfig['privilege']
         );
     }
 
@@ -284,7 +297,10 @@ class SwitchUserService
     public function currentUserIsAllowed()
     {
         $adminUser = $this->getCurrentImpersonatorUser();
-        $targetUser = $this->rcmUserService->getCurrentUser();
+        $psrRequest = GetPsrRequest::invoke();
+
+        // Get current user
+        $targetUser = $this->getIdentity->__invoke($psrRequest);
 
         if (empty($adminUser)) {
             $adminUser = $targetUser;

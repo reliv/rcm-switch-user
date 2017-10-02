@@ -3,7 +3,7 @@
 namespace Rcm\SwitchUser\Restriction;
 
 use Interop\Container\ContainerInterface;
-use RcmUser\User\Entity\User;
+use RcmUser\User\Entity\UserInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -61,12 +61,12 @@ class CompositeRestriction implements Restriction
     /**
      * allowed
      *
-     * @param User $adminUser
-     * @param User $targetUser
+     * @param UserInterface $adminUser
+     * @param UserInterface $targetUser
      *
      * @return RestrictionResult
      */
-    public function allowed(User $adminUser, User $targetUser)
+    public function allowed(UserInterface $adminUser, UserInterface $targetUser)
     {
         /** @var Restriction $restriction */
         foreach ($this->restrictions as $restriction) {

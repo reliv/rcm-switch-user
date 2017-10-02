@@ -6,17 +6,7 @@ use Reliv\RcmApiLib\Model\ApiMessage;
 use Reliv\RcmApiLib\Model\ExceptionApiMessage;
 
 /**
- * Class RpcSwitchBackController
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Reliv\Conference\ApiController
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class RpcSwitchBackController extends BaseApiController
 {
@@ -31,7 +21,7 @@ class RpcSwitchBackController extends BaseApiController
     {
         $service = $this->getSwitchUserService();
 
-        $currentUser = $this->getRcmUserService()->getCurrentUser();
+        $currentUser = $this->getCurrentUser();
 
         if (empty($currentUser)) {
             return $this->getApiResponse(null, 401);

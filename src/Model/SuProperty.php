@@ -2,21 +2,11 @@
 
 namespace Rcm\SwitchUser\Model;
 
-use RcmUser\User\Entity\User;
+use RcmUser\User\Entity\UserInterface;
 use Reliv\RcmApiLib\Model\AbstractApiModel;
 
 /**
- * Class SuProperty
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   moduleNameHere
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class SuProperty extends AbstractApiModel
 {
@@ -26,14 +16,14 @@ class SuProperty extends AbstractApiModel
     const SU_PROPERTY = 'suUser';
 
     /**
-     * @var User
+     * @var UserInterface
      */
     protected $suUser;
 
     /**
-     * @param User $suUser
+     * @param UserInterface $suUser
      */
-    public function __construct(User $suUser)
+    public function __construct(UserInterface $suUser)
     {
         $this->suUser = $suUser;
     }
@@ -41,7 +31,7 @@ class SuProperty extends AbstractApiModel
     /**
      * getUserId
      *
-     * @return User
+     * @return UserInterface
      */
     public function getUser()
     {

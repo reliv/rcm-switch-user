@@ -2,32 +2,32 @@
 
 namespace Rcm\SwitchUser\ApiController;
 
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\GetPsrRequest;
 use Reliv\RcmApiLib\Controller\AbstractRestfulJsonController;
 
 /**
- * Class RpcController
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Reliv\Conference\ApiController
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class BaseApiController extends AbstractRestfulJsonController
 {
     /**
-     * getRcmUserService
+     * @param null $default
      *
-     * @return \RcmUser\Service\RcmUserService
+     * @return null|\RcmUser\User\Entity\UserInterface
      */
-    protected function getRcmUserService()
+    protected function getCurrentUser($default = null)
     {
-        return $this->getServiceLocator()->get(
-            \RcmUser\Service\RcmUserService::class
+        /** @var GetIdentity $getIdentity */
+        $getIdentity = $this->getServiceLocator()->get(
+            GetIdentity::class
+        );
+
+        $psrRequest = GetPsrRequest::invoke();
+
+        return $getIdentity->__invoke(
+            $psrRequest,
+            $default
         );
     }
 

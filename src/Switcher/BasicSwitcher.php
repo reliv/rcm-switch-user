@@ -5,45 +5,20 @@ namespace Rcm\SwitchUser\Switcher;
 use Rcm\SwitchUser\Model\SuProperty;
 use Rcm\SwitchUser\Result;
 use Rcm\SwitchUser\Service\SwitchUserLogService;
-use RcmUser\Service\RcmUserService;
-use RcmUser\User\Entity\User;
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\Authentication\SetIdentityInsecure;
+use RcmUser\Api\GetPsrRequest;
+use RcmUser\User\Entity\UserInterface;
 
 /**
- * Class BasicSwitcher
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Rcm\SwitchUser\Switcher
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2015 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
-class BasicSwitcher implements Switcher
+class BasicSwitcher extends SwitcherAbstract implements Switcher
 {
     /**
      * @var string
      */
     protected $name = 'basic';
-
-    /**
-     * @var RcmUserService
-     */
-    protected $rcmUserService;
-
-    /**
-     * @param RcmUserService       $rcmUserService
-     * @param SwitchUserLogService $switchUserLogService
-     */
-    public function __construct(
-        RcmUserService $rcmUserService,
-        SwitchUserLogService $switchUserLogService
-    ) {
-        $this->rcmUserService = $rcmUserService;
-        $this->switchUserLogService = $switchUserLogService;
-    }
 
     /**
      * getName
@@ -56,58 +31,29 @@ class BasicSwitcher implements Switcher
     }
 
     /**
-     * switchTo
-     *
-     * @param User $targetUser
-     *
-     * @return Result
-     */
-    public function switchTo(User $targetUser, $options = [])
-    {
-        $currentUser = $this->rcmUserService->getCurrentUser();
-
-        $result = new Result();
-
-        // Force login as $targetUser
-        $this->rcmUserService->setIdentity($targetUser);
-        // add SU property to target user
-        $targetUser->setProperty(
-            SuProperty::SU_PROPERTY,
-            new SuProperty($currentUser)
-        );
-
-        // log action
-        $this->logAction(
-            $currentUser->getId(),
-            $targetUser->getId(),
-            'SU was successful',
-            true
-        );
-
-        $result->setSuccess(true, 'SU was successful');
-
-        return $result;
-    }
-
-    /**
      * switchBack
      *
-     * @param User  $impersonatorUser
-     * @param array $options
+     * @param UserInterface $impersonatorUser
+     * @param array         $options
      *
      * @return Result
      * @throws \Exception
      */
-    public function switchBack(User $impersonatorUser, $options = [])
+    public function switchBack(UserInterface $impersonatorUser, $options = [])
     {
+        $psrRequest = GetPsrRequest::invoke();
+
         // Get current user
-        $currentUserId = $this->rcmUserService->getCurrentUser()->getId();
+        $currentUser = $this->getIdentity->__invoke($psrRequest);
+
+        $currentUserId = $currentUser->getId();
+
         $impersonatorUserId = $impersonatorUser->getId();
 
         $result = new Result();
 
         // Force login as $suUser
-        $this->rcmUserService->setIdentity($impersonatorUser);
+        $this->setIdentity->__invoke($psrRequest, $impersonatorUser);
 
         // log action
         $this->logAction(
@@ -120,29 +66,5 @@ class BasicSwitcher implements Switcher
         $result->setSuccess(true, 'SU switch back was successful');
 
         return $result;
-    }
-
-    /**
-     * logAction
-     *
-     * @param $adminUserId
-     * @param $targetUserId
-     * @param $action
-     * @param $actionSuccess
-     *
-     * @return void
-     */
-    protected function logAction(
-        $adminUserId,
-        $targetUserId,
-        $action,
-        $actionSuccess
-    ) {
-        $this->switchUserLogService->logAction(
-            $adminUserId,
-            $targetUserId,
-            $action,
-            $actionSuccess
-        );
     }
 }
