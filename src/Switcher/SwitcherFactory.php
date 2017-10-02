@@ -3,7 +3,6 @@
 namespace Rcm\SwitchUser\Switcher;
 
 use Interop\Container\ContainerInterface;
-use Rcm\SwitchUser\Switcher\Switcher;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**

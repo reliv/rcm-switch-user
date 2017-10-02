@@ -24,6 +24,7 @@ class ModuleConfig
                     ]
                 ]
             ],
+
             /* ASSET MANAGER */
             'asset_manager' => [
                 'resolver_configs' => [
