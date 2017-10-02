@@ -109,7 +109,7 @@ class SwitchUserAclService
      */
     public function currentUserIsAllowed($resourceId, $privilege, $providerId = null)
     {
-        $psrRequest = GetPsrRequest::class;
+        $psrRequest = GetPsrRequest::invoke();
 
         $user = $this->getIdentity->__invoke($psrRequest);
 
@@ -166,7 +166,7 @@ class SwitchUserAclService
         $privilege,
         $providerId = null
     ) {
-        $psrRequest = GetPsrRequest::class;
+        $psrRequest = GetPsrRequest::invoke();
 
         $user = $this->getIdentity->__invoke($psrRequest);
 
