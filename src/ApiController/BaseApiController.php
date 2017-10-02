@@ -2,6 +2,8 @@
 
 namespace Rcm\SwitchUser\ApiController;
 
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\GetPsrRequest;
 use Reliv\RcmApiLib\Controller\AbstractRestfulJsonController;
 
 /**
@@ -10,14 +12,22 @@ use Reliv\RcmApiLib\Controller\AbstractRestfulJsonController;
 class BaseApiController extends AbstractRestfulJsonController
 {
     /**
-     * getRcmUserService
+     * @param null $default
      *
-     * @return \RcmUser\Service\RcmUserService
+     * @return null|\RcmUser\User\Entity\UserInterface
      */
-    protected function getRcmUserService()
+    protected function getCurrentUser($default = null)
     {
-        return $this->getServiceLocator()->get(
-            \RcmUser\Service\RcmUserService::class
+        /** @var GetIdentity $getIdentity */
+        $getIdentity = $this->getServiceLocator()->get(
+            GetIdentity::class
+        );
+
+        $psrRequest = GetPsrRequest::invoke();
+
+        return $getIdentity->__invoke(
+            $psrRequest,
+            $default
         );
     }
 

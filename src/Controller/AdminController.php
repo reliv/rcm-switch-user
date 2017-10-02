@@ -2,6 +2,8 @@
 
 namespace Rcm\SwitchUser\Controller;
 
+use RcmUser\Api\Authentication\GetIdentity;
+use RcmUser\Api\GetPsrRequest;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -11,14 +13,22 @@ use Zend\View\Model\ViewModel;
 class AdminController extends AbstractActionController
 {
     /**
-     * getRcmUserService
+     * @param null $default
      *
-     * @return \RcmUser\Service\RcmUserService
+     * @return null|\RcmUser\User\Entity\UserInterface
      */
-    protected function getRcmUserService()
+    protected function getCurrentUser($default = null)
     {
-        return $this->getServiceLocator()->get(
-            \RcmUser\Service\RcmUserService::class
+        /** @var GetIdentity $getIdentity */
+        $getIdentity = $this->getServiceLocator()->get(
+            GetIdentity::class
+        );
+
+        $psrRequest = GetPsrRequest::invoke();
+
+        return $getIdentity->__invoke(
+            $psrRequest,
+            $default
         );
     }
 
@@ -66,12 +76,11 @@ class AdminController extends AbstractActionController
     public function indexAction()
     {
         $switchUserService = $this->getSwitchUserService();
-        $rcmUserService = $this->getRcmUserService();
 
         $view = new ViewModel();
 
         $adminUser = $switchUserService->getCurrentImpersonatorUser();
-        $targetUser = $rcmUserService->getCurrentUser();
+        $targetUser = $this->getCurrentUser();
         $view->setVariable(
             'targetUser',
             $targetUser

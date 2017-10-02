@@ -2,7 +2,7 @@
 
 namespace Rcm\SwitchUser\Restriction;
 
-use RcmUser\Service\RcmUserService;
+use RcmUser\Api\Acl\IsUserAllowed;
 use RcmUser\User\Entity\UserInterface;
 
 /**
@@ -16,18 +16,18 @@ class SuUserRestriction implements Restriction
     protected $aclConfig;
 
     /**
-     * @var RcmUserService
+     * @var IsUserAllowed
      */
-    protected $rcmUserService;
+    protected $isUserAllowed;
 
     /**
-     * @param array          $config
-     * @param RcmUserService $rcmUserService
+     * @param               $config
+     * @param IsUserAllowed $isUserAllowed
      */
-    public function __construct($config, RcmUserService $rcmUserService)
+    public function __construct($config, IsUserAllowed $isUserAllowed)
     {
         $this->aclConfig = $config['Rcm\\SwitchUser']['acl'];
-        $this->rcmUserService = $rcmUserService;
+        $this->isUserAllowed = $isUserAllowed;
     }
 
     /**
@@ -40,11 +40,10 @@ class SuUserRestriction implements Restriction
      */
     public function allowed(UserInterface $adminUser, UserInterface $targetUser)
     {
-        $isAllowed = $this->rcmUserService->isUserAllowed(
+        $isAllowed = $this->isUserAllowed->__invoke(
+            $targetUser,
             $this->aclConfig['resourceId'],
-            $this->aclConfig['privilege'],
-            $this->aclConfig['providerId'],
-            $targetUser
+            $this->aclConfig['privilege']
         );
 
         if ($isAllowed) {

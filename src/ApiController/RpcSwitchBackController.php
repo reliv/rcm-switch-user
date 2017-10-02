@@ -21,7 +21,7 @@ class RpcSwitchBackController extends BaseApiController
     {
         $service = $this->getSwitchUserService();
 
-        $currentUser = $this->getRcmUserService()->getCurrentUser();
+        $currentUser = $this->getCurrentUser();
 
         if (empty($currentUser)) {
             return $this->getApiResponse(null, 401);

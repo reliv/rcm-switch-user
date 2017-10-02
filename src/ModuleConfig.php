@@ -2,9 +2,11 @@
 
 namespace Rcm\SwitchUser;
 
+use RcmUser\Api\Acl\IsUserAllowed;
 use RcmUser\Api\Authentication\Authenticate;
 use RcmUser\Api\Authentication\GetIdentity;
 use RcmUser\Api\Authentication\SetIdentityInsecure;
+use RcmUser\Api\User\GetUserByUsername;
 
 /**
  * @author James Jervis - https://github.com/jerv13
@@ -125,13 +127,13 @@ class ModuleConfig
                     \Rcm\SwitchUser\Restriction\AclRestriction::class => [
                         'arguments' => [
                             'config',
-                            \RcmUser\Service\RcmUserService::class,
+                            IsUserAllowed::class,
                         ]
                     ],
                     \Rcm\SwitchUser\Restriction\SuUserRestriction::class => [
                         'arguments' => [
                             'config',
-                            \RcmUser\Service\RcmUserService::class,
+                            IsUserAllowed::class,
                         ]
                     ],
 
@@ -139,7 +141,8 @@ class ModuleConfig
                     \Rcm\SwitchUser\Service\SwitchUserAclService::class => [
                         'arguments' => [
                             'config',
-                            \RcmUser\Service\RcmUserService::class,
+                            IsUserAllowed::class,
+                            GetIdentity::class,
                             \Rcm\SwitchUser\Service\SwitchUserService::class,
                         ]
                     ],
@@ -151,7 +154,9 @@ class ModuleConfig
                     \Rcm\SwitchUser\Service\SwitchUserService::class => [
                         'arguments' => [
                             'config',
-                            \RcmUser\Service\RcmUserService::class,
+                            GetUserByUsername::class,
+                            GetIdentity::class,
+                            IsUserAllowed::class,
                             \Rcm\SwitchUser\Restriction\Restriction::class,
                             \Rcm\SwitchUser\Switcher\Switcher::class,
                             \Rcm\SwitchUser\Service\SwitchUserLogService::class,

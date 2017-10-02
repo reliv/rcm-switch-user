@@ -32,7 +32,7 @@ class RpcSuController extends BaseApiController
 
         $resultData = $this->buildResult(
             true,
-            $this->getRcmUserService()->getCurrentUser()
+            $this->getCurrentUser()
         );
 
         return $this->getApiResponse($resultData);
@@ -50,7 +50,7 @@ class RpcSuController extends BaseApiController
         // Note: we can only ever check the current user for security reasons
         // If an SU user could keep switching,
         // there would be no way to know the original user
-        $currentUser = $this->getRcmUserService()->getCurrentUser();
+        $currentUser = $this->getCurrentUser();
 
         if (!$this->isAllowed($currentUser)) {
             return $this->getApiResponse(null, 401);
