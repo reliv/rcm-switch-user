@@ -16,8 +16,7 @@
         <div class="col-sm-12">
             <form ng-submit="propOnSwitchTo()">
                 <div class="input-group input-group-sm">
-                    <input class="form-control"
-                           id="switchToUserName"
+                    <input class="form-control switchToUserName"
                            placeholder="{{propSwitchToUserNamePlaceholder}}"
                            ng-model="propSwitchToUserName"
                            type="text"
@@ -45,8 +44,7 @@
             <form ng-show="propSwitchBackMethod == 'auth' && propIsSu"
                   ng-submit="propOnSwitchBack()">
                 <div class="input-group  input-group-sm">
-                    <input class="form-control"
-                           id="suUserPassword"
+                    <input class="form-control suUserPassword"
                            placeholder="password"
                            ng-model="propSuUserPassword"
                            type="password"
