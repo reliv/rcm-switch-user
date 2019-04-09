@@ -21,20 +21,20 @@ class ModuleConfig
                 'HtmlIncludes' => [
                     'scripts' => [
                         'modules' => [
-                            '/modules/switch-user/dist/switch-user.min.js' => []
+//                            '/modules/switch-user/dist/switch-user.min.js' => [] //moved to webpack
                         ],
                     ]
                 ]
             ],
 
             /* ASSET MANAGER */
-            'asset_manager' => [
-                'resolver_configs' => [
-                    'aliases' => [
-                        'modules/switch-user/' => __DIR__ . '/../public/',
-                    ],
-                ],
-            ],
+//            'asset_manager' => [ //moved to webpack
+//                'resolver_configs' => [
+//                    'aliases' => [
+//                        'modules/switch-user/' => __DIR__ . '/../public/',
+//                    ],
+//                ],
+//            ],
 
             /* DOCTRINE */
             'doctrine' => [
