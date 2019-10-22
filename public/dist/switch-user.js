@@ -381,20 +381,16 @@ var RcmSwitchUserService = function (rcmLoading, rcmApiLibService, rcmEventManag
 
     /**
      * switchUserBack
-     * @param suUserPassword
+     * @param noLongerUsedVariableOnlyExistsForBCSupport
      * @param onSuccess
      * @param onError
      */
-    self.switchUserBack = function (suUserPassword, onSuccess, onError) {
-
-        var data = {
-            suUserPassword: suUserPassword
-        };
+    self.switchUserBack = function (noLongerUsedVariableOnlyExistsForBCSupport, onSuccess, onError) {
 
         rcmApiLibService.post(
             {
                 url: apiPaths.switchUserBack,
-                data: data,
+                data: {},
                 loading: function (loading) {
                     var loadingInt = Number(!loading);
                     rcmLoading.setLoading(
@@ -583,7 +579,7 @@ var RcmSwitchUserAdminService = function (
             if ($scope.isSu) {
                 apiInit();
                 rcmSwitchUserService.switchUserBack(
-                    $scope.propSwitchToUserName,
+                    null,
                     onSwitchBackAndToSuccess,
                     onSwitchBackError
                 );
@@ -599,7 +595,7 @@ var RcmSwitchUserAdminService = function (
         $scope.switchBack = function () {
             apiInit();
             rcmSwitchUserService.switchUserBack(
-                $scope.suUserPassword,
+                null,
                 onSwitchBackSuccess,
                 onSwitchBackError
             );
