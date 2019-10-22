@@ -125,7 +125,7 @@ var RcmSwitchUserAdminService = function (
             if ($scope.isSu) {
                 apiInit();
                 rcmSwitchUserService.switchUserBack(
-                    $scope.propSwitchToUserName,
+                    null,
                     onSwitchBackAndToSuccess,
                     onSwitchBackError
                 );
@@ -141,7 +141,7 @@ var RcmSwitchUserAdminService = function (
         $scope.switchBack = function () {
             apiInit();
             rcmSwitchUserService.switchUserBack(
-                $scope.suUserPassword,
+                null,
                 onSwitchBackSuccess,
                 onSwitchBackError
             );
